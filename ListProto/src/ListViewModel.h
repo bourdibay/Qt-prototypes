@@ -24,30 +24,10 @@ public:
     { }
 
     virtual ~ListViewModel() { qDeleteAll(_content); }
-
-    QVariant data(const QModelIndex &index, int role) const {
-        if (index.isValid() == false) {
-            return QVariant();
-        }
-        if (role == Qt::DisplayRole) {
-            return _content[index.row()]->name;
-        }
-        return QVariant();
-    }
-
-    bool setData(const QModelIndex &index, const QVariant &value,
-        int role = Qt::EditRole) {
-            if (index.isValid() == false) {
-                return false;
-            }
-            if (role == Qt::EditRole) {
-                const int row = index.row();
-                _content[row]->name = value.toString();
-                return true;
-            }
-            return false;
-    }
-
+    virtual QVariant data(const QModelIndex &index, int role) const = 0;
+    virtual bool setData(const QModelIndex &index, const QVariant &value,
+        int role = Qt::EditRole) = 0;
+        
     int rowCount(const QModelIndex &parent = QModelIndex()) const {
         return _content.size();
     }
