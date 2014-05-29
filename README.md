@@ -11,7 +11,10 @@ Scintilla may be useful to those who want to use it, and are not satisfied enoug
 
 How to build
 ============
-mkdir build; cmake ../; make
+mkdir build
+cd build
+cmake ../
+make
 
 On Windows, I provide a script "gen_VS12_x64.bat" script which generates a Visual Studio 2013 solution.
 The prototypes should compile with VS2012 too (tested at the beginning of the project, before I moved to VS2013).
