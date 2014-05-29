@@ -1,0 +1,26 @@
+Installation notice of QScintilla for Windows.
+
+- ensure QTDIR exists (in a command shell, type "echo %QTDIR%"). This must refer to the installation of Qt (example: C:\Qt\Qt5.3.0\5.3\msvc2013_64\)
+- launch the script install_QCcintilla_x64.bat (for VS2013, change the path of the vcvarsall.bat for VS2012 support).
+- At the end of the script, it is possible that it was asked to you if the files copied are files or directories. Type "F" for each one.
+
+How to know if the install is good ?
+- In QTDIR/bin there must be :
+        - qscintilla2.dll
+        - qscintilla2_d.dll
+- In QTDIR/lib there must be :
+        - qscintilla2.dll
+        - qscintilla2_d.dll
+        - qscintilla2.lib
+        - qscintilla2_d.pdb
+- In QTDIR/include there must be :
+        - le dossier Qsci
+- In QTDIR there must be :
+        - le dossier qsci
+- In QTDIR/translations there must be :
+        - qscintilla_cs.qm
+        - qscintilla_de.qm
+        - qscintilla_es.qm
+        - qscintilla_fr.qm
+        - qscintilla_pt_br.qm
+        - qscintilla_ru.qm
