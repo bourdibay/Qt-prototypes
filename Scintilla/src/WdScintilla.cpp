@@ -31,12 +31,12 @@
 const int WdScintilla::CALLTIP_HEIGHT_SHIFT = 15;
 
 WdScintilla::WdScintilla(QWidget *parent)
-    : _scintilla(new ScintillaPrivate(this)),
-      _filename(),
-      _layout(new QGridLayout()),
-      _textCopied(),
-      _textGoingToBeDeleted(),
-      _lengthTextDeleted(0) {
+: _scintilla(new ScintillaPrivate(this))
+, _filename()
+, _layout(new QGridLayout())
+, _textCopied()
+, _textGoingToBeDeleted()
+, _lengthTextDeleted(0) {
     setParent(parent);
     // _scintilla->setUtf8(true);
 
@@ -59,19 +59,21 @@ WdScintilla::WdScintilla(QWidget *parent)
 #endif
     _scintilla->setFont(font);
 
-    QObject::connect(_scintilla, SIGNAL(marginClicked(int, int, Qt::KeyboardModifiers)),
-                     this, SLOT(slot_marginClicked(int, int, Qt::KeyboardModifiers)));
-    QObject::connect(_scintilla, SIGNAL(cursorPositionChanged(int, int)),
-                     this, SLOT(slot_cursorPositionChanged(int, int)));
-    QObject::connect(_scintilla, SIGNAL(SCN_MODIFIED(int, int, const char *, int, int, int, int, int,
-                                        int, int)),
-                     this, SLOT(slot_textModified(int, int, const char *, int, int, int, int, int, int, int)));
-    QObject::connect(_scintilla, SIGNAL(SCN_ZOOM()),
-                     this, SLOT(slot_zoom()));
+    QObject::connect(
+        _scintilla, SIGNAL(marginClicked(int, int, Qt::KeyboardModifiers)),
+        this, SLOT(slot_marginClicked(int, int, Qt::KeyboardModifiers)));
+    QObject::connect(_scintilla, SIGNAL(cursorPositionChanged(int, int)), this,
+                     SLOT(slot_cursorPositionChanged(int, int)));
+    QObject::connect(
+        _scintilla, SIGNAL(SCN_MODIFIED(int, int, const char *, int, int, int,
+                                        int, int, int, int)),
+        this, SLOT(slot_textModified(int, int, const char *, int, int, int, int,
+                                     int, int, int)));
+    QObject::connect(_scintilla, SIGNAL(SCN_ZOOM()), this, SLOT(slot_zoom()));
 
     QObject::connect(_scintilla->getCallTip(),
-                     SIGNAL(entryChosen(QString const &)),
-                     this, SLOT(slot_callTip_entryChosen(QString const &)));
+                     SIGNAL(entryChosen(QString const &)), this,
+                     SLOT(slot_callTip_entryChosen(QString const &)));
     QObject::connect(_scintilla, SIGNAL(SCN_FOCUSOUT()), this,
                      SLOT(slot_lostFocus()));
     QObject::connect(_scintilla, SIGNAL(SCN_FOCUSIN()), this,
@@ -91,13 +93,13 @@ WdScintilla::~WdScintilla() {
     // Thus we need a hasChanged() method.
 }
 
-//TODO: take a QFile (because of WFileSystemWatcher already has a QFile)
+// TODO: take a QFile (because of WFileSystemWatcher already has a QFile)
 void WdScintilla::openFile(QString const &filename) {
     _filename = filename;
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly) == false) {
         qDebug() << "Cannot open file " << filename;
-        //TODO: throw
+        // TODO: throw
     }
     QByteArray content = file.readAll();
 
@@ -113,7 +115,8 @@ void WdScintilla::save(QString const &name) {
     qDebug() << "Saving file as:" << nameToUse;
     QFile file(nameToUse);
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << tr("Cannot open the file %1 in write mode").arg(nameToUse);
+        qWarning() << tr("Cannot open the file %1 in write mode")
+                          .arg(nameToUse);
         return;
     }
     QTextStream out(&file);
@@ -128,7 +131,6 @@ bool WdScintilla::eventFilter(QObject *o, QEvent *ev) {
     }
     return QWidget::eventFilter(o, ev);
 }
-
 
 bool WdScintilla::isReadOnly() const {
     return _scintilla->isReadOnly();
@@ -163,11 +165,13 @@ void WdScintilla::setText(std::string const &str) const {
 // add text
 void WdScintilla::addText(QString const &str) const {
     _scintilla->SendScintilla(QsciScintilla::SCI_ADDTEXT,
-                              static_cast<unsigned long>(str.toUtf8().length()), str.toUtf8().constData());
+                              static_cast<unsigned long>(str.toUtf8().length()),
+                              str.toUtf8().constData());
 }
 
 void WdScintilla::addText(QByteArray const &text) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_ADDTEXT, text.length(), text.constData());
+    _scintilla->SendScintilla(QsciScintilla::SCI_ADDTEXT, text.length(),
+                              text.constData());
 }
 
 void WdScintilla::addText(char const *str) const {
@@ -184,12 +188,13 @@ void WdScintilla::addText(std::string const &str) const {
 
 //////// APPEND TEXT //////////
 void WdScintilla::appendText(QString const &str) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_APPENDTEXT, str.toUtf8().length(),
-                              str.toUtf8().constData());
+    _scintilla->SendScintilla(QsciScintilla::SCI_APPENDTEXT,
+                              str.toUtf8().length(), str.toUtf8().constData());
 }
 
 void WdScintilla::appendText(QByteArray const &text) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_APPENDTEXT, text.length(), text.constData());
+    _scintilla->SendScintilla(QsciScintilla::SCI_APPENDTEXT, text.length(),
+                              text.constData());
 }
 
 void WdScintilla::appendText(char const *str) const {
@@ -209,13 +214,15 @@ void WdScintilla::insertText(const int pos, char const *text) const {
     _scintilla->SendScintilla(QsciScintilla::SCI_INSERTTEXT, pos, text);
 }
 
-void WdScintilla::insertText(const int line, const int index, char const *str) const {
+void WdScintilla::insertText(const int line, const int index,
+                             char const *str) const {
     const int pos = _scintilla->positionFromLineIndex(line, index);
     insertText(pos, str);
 }
 
 void WdScintilla::insertText(const int pos, QByteArray const &text) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_INSERTTEXT, pos, text.constData());
+    _scintilla->SendScintilla(QsciScintilla::SCI_INSERTTEXT, pos,
+                              text.constData());
 }
 
 void WdScintilla::insertText(const int pos, QString const &text) const {
@@ -223,7 +230,7 @@ void WdScintilla::insertText(const int pos, QString const &text) const {
 }
 
 void WdScintilla::insertText(const int line, const int index,
-                                        QString const &text) const {
+                             QString const &text) const {
     _scintilla->insertAt(text, line, index);
 }
 
@@ -246,8 +253,9 @@ void WdScintilla::copy(const int start, const int end) {
 }
 
 void WdScintilla::copy(const int lineStart, const int indexStart,
-                                  const int lineEnd, const int indexEnd) {
-    const int posBegin = _scintilla->positionFromLineIndex(lineStart, indexStart);
+                       const int lineEnd, const int indexEnd) {
+    const int posBegin =
+        _scintilla->positionFromLineIndex(lineStart, indexStart);
     const int posEnd = _scintilla->positionFromLineIndex(lineEnd, indexEnd);
     copy(posBegin, posEnd);
 }
@@ -263,7 +271,8 @@ void WdScintilla::copyToClipboard(const long length, std::string const &text) {
 
 void WdScintilla::copyToClipboard(QString const &text) {
     _textCopied = text;
-    _scintilla->SendScintilla(QsciScintilla::SCI_COPYTEXT, text.toUtf8().length(),
+    _scintilla->SendScintilla(QsciScintilla::SCI_COPYTEXT,
+                              text.toUtf8().length(),
                               text.toUtf8().constData());
 }
 
@@ -417,8 +426,10 @@ void WdScintilla::setCurrentPositionNoSelection(const int pos) const {
     _scintilla->SendScintilla(QsciScintilla::SCI_SETEMPTYSELECTION, pos);
 }
 
-void WdScintilla::setCurrentPositionNoSelection(const int line, const int index) const {
-    setCurrentPositionNoSelection(_scintilla->positionFromLineIndex(line, index));
+void WdScintilla::setCurrentPositionNoSelection(const int line,
+                                                const int index) const {
+    setCurrentPositionNoSelection(
+        _scintilla->positionFromLineIndex(line, index));
 }
 
 void WdScintilla::setCaretForegroundColor(QColor const &color) const {
@@ -476,12 +487,12 @@ QString WdScintilla::getLine(const int line) const {
 }
 
 int WdScintilla::getLengthRange(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd) const {
-    const long posBegin = _scintilla->positionFromLineIndex(lineStart, indexStart);
+                                const int lineEnd, const int indexEnd) const {
+    const long posBegin =
+        _scintilla->positionFromLineIndex(lineStart, indexStart);
     const long posEnd = _scintilla->positionFromLineIndex(lineEnd, indexEnd);
     return posEnd - posBegin;
 }
-
 
 QString WdScintilla::getSelectedText() const {
     return _scintilla->selectedText();
@@ -490,15 +501,16 @@ QString WdScintilla::getSelectedText() const {
 QString WdScintilla::getText(const long begin, const long end) const {
     const int length = end - begin;
     char *buffer = new char[length + 1];
-    _scintilla->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE,
-                              begin, end, buffer);
+    _scintilla->SendScintilla(QsciScintilla::SCI_GETTEXTRANGE, begin, end,
+                              buffer);
     QString ret = QString::fromUtf8(buffer, length);
     return ret;
 }
 
 QString WdScintilla::getText(const int lineStart, const int indexStart,
-                                        const int lineEnd, const int indexEnd) const {
-    const long posBegin = _scintilla->positionFromLineIndex(lineStart, indexStart);
+                             const int lineEnd, const int indexEnd) const {
+    const long posBegin =
+        _scintilla->positionFromLineIndex(lineStart, indexStart);
     const long posEnd = _scintilla->positionFromLineIndex(lineEnd, indexEnd);
     return getText(posBegin, posEnd);
 }
@@ -508,7 +520,8 @@ int WdScintilla::getBeginPositionLine(const int line) const {
 }
 
 int WdScintilla::getEndPositionLine(const int line) const {
-    return _scintilla->SendScintilla(QsciScintilla::SCI_GETLINEENDPOSITION, line);
+    return _scintilla->SendScintilla(QsciScintilla::SCI_GETLINEENDPOSITION,
+                                     line);
 }
 
 int WdScintilla::getLineNumber(const int pos) const {
@@ -574,7 +587,8 @@ void WdScintilla::gotoPos(const int pos) const {
 }
 
 int WdScintilla::getWordStartPosition(const int pos) const {
-    return _scintilla->SendScintilla(QsciScintilla::SCI_WORDSTARTPOSITION, pos, true);
+    return _scintilla->SendScintilla(QsciScintilla::SCI_WORDSTARTPOSITION, pos,
+                                     true);
 }
 
 int WdScintilla::getWordStartPosition(const int line, const int index) const {
@@ -582,7 +596,8 @@ int WdScintilla::getWordStartPosition(const int line, const int index) const {
 }
 
 int WdScintilla::getWordEndPosition(const int pos) const {
-    return _scintilla->SendScintilla(QsciScintilla::SCI_WORDENDPOSITION, pos, true);
+    return _scintilla->SendScintilla(QsciScintilla::SCI_WORDENDPOSITION, pos,
+                                     true);
 }
 
 int WdScintilla::getWordEndPosition(const int line, const int index) const {
@@ -621,9 +636,8 @@ void WdScintilla::deleteRange(const int pos, const long length) const {
     _scintilla->SendScintilla(QsciScintilla::SCI_DELETERANGE, pos, length);
 }
 
-void WdScintilla::deleteRange(const int line,
-        const int index,
-        const long length) const {
+void WdScintilla::deleteRange(const int line, const int index,
+                              const long length) const {
     deleteRange(_scintilla->positionFromLineIndex(line, index), length);
 }
 
@@ -643,16 +657,13 @@ void WdScintilla::setSelectionForegroundColor(QColor const &color) const {
     _scintilla->setSelectionForegroundColor(color);
 }
 
-
 void WdScintilla::setZoom(const int zoom) const {
     const int currentZoom = getZoom();
     if (currentZoom > zoom) {
         setZoomRange(-1 * (currentZoom - zoom));
-    }
-    else if (currentZoom < zoom) {
+    } else if (currentZoom < zoom) {
         setZoomRange(zoom - currentZoom);
-    }
-    else {   // = 0
+    } else { // = 0
         setZoomRange(-currentZoom);
     }
 }
@@ -660,8 +671,7 @@ void WdScintilla::setZoom(const int zoom) const {
 void WdScintilla::setZoomRange(const int range) const {
     if (range > 0) {
         _scintilla->zoomIn(range);
-    }
-    else {
+    } else {
         _scintilla->zoomOut(-range);
     }
 }
@@ -698,46 +708,49 @@ void WdScintilla::selectRange(const int begin, const int end) const {
 }
 
 void WdScintilla::selectRange(const int beginLine, const int beginIndex,
-        const int endLine, const int endIndex) const {
-    const int posBegin = _scintilla->positionFromLineIndex(beginLine, beginIndex);
+                              const int endLine, const int endIndex) const {
+    const int posBegin =
+        _scintilla->positionFromLineIndex(beginLine, beginIndex);
     const int posEnd = _scintilla->positionFromLineIndex(endLine, endIndex);
     selectRange(posBegin, posEnd);
 }
 
-
 void WdScintilla::setMarginSymbol(const int margin) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN,
-                              margin, QsciScintilla::SC_MARGIN_SYMBOL);
+    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN, margin,
+                              QsciScintilla::SC_MARGIN_SYMBOL);
 }
 
 void WdScintilla::setMarginText(const int margin) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN,
-                              margin, QsciScintilla::SC_MARGIN_TEXT);
+    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN, margin,
+                              QsciScintilla::SC_MARGIN_TEXT);
 }
 
 void WdScintilla::setMarginLineNumber(const int margin) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN,
-                              margin, QsciScintilla::SC_MARGIN_NUMBER);
+    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN, margin,
+                              QsciScintilla::SC_MARGIN_NUMBER);
 }
 
 void WdScintilla::setMarginTextJustified(const int margin) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN,
-                              margin, QsciScintilla::SC_MARGIN_RTEXT);
+    _scintilla->SendScintilla(QsciScintilla::SCI_SETMARGINTYPEN, margin,
+                              QsciScintilla::SC_MARGIN_RTEXT);
 }
 
 void WdScintilla::setMarginWidth(const int margin, QString const &s) const {
     _scintilla->setMarginWidth(margin, s);
 }
 
-void WdScintilla::displayLineNumbers(const int margin, const bool display) const {
+void WdScintilla::displayLineNumbers(const int margin,
+                                     const bool display) const {
     _scintilla->setMarginLineNumbers(margin, display);
 }
 
-void WdScintilla::setMarginSensitiveToClick(const int margin, const bool sens) const {
+void WdScintilla::setMarginSensitiveToClick(const int margin,
+                                            const bool sens) const {
     _scintilla->setMarginSensitivity(margin, sens);
 }
 
-int WdScintilla::defineMarker(const WdMarkerSymbol symbol, const int nbMarker) const {
+int WdScintilla::defineMarker(const WdMarkerSymbol symbol,
+                              const int nbMarker) const {
     return _scintilla->markerDefine(symbol, nbMarker);
 }
 
@@ -754,12 +767,12 @@ int WdScintilla::defineMarker(const QImage &im, const int nbMarker) const {
 }
 
 void WdScintilla::setMarkerBackgroundColor(QColor const &color,
-        const int nbMarker) const {
+                                           const int nbMarker) const {
     _scintilla->setMarkerBackgroundColor(color, nbMarker);
 }
 
 void WdScintilla::setMarkerForegroundColor(QColor const &color,
-        const int nbMarker) const {
+                                           const int nbMarker) const {
     _scintilla->setMarkerForegroundColor(color, nbMarker);
 }
 
@@ -768,7 +781,7 @@ void WdScintilla::setMarginMarkerMask(const int margin, const int mask) const {
 }
 
 void WdScintilla::setMarginMarkerMask(const int margin,
-        QList<int> const &markers) const {
+                                      QList<int> const &markers) const {
     setMarginMarkerMask(margin, getMaskFromMarkers(markers));
 }
 
@@ -785,13 +798,12 @@ void WdScintilla::addMarker(const int line, const int marker) const {
 }
 
 void WdScintilla::addSetMarker(const int line, const int mask) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_MARKERADDSET,
-                              line, mask);
+    _scintilla->SendScintilla(QsciScintilla::SCI_MARKERADDSET, line, mask);
 }
 
 void WdScintilla::addSetMarker(const int line, QList<int> const &mask) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_MARKERADDSET,
-                              line, getMaskFromMarkers(mask));
+    _scintilla->SendScintilla(QsciScintilla::SCI_MARKERADDSET, line,
+                              getMaskFromMarkers(mask));
 }
 
 unsigned int WdScintilla::getMarkersMask(const int line) const {
@@ -821,11 +833,13 @@ void WdScintilla::deleteAllMarkersOnLine(const int line) const {
     }
 }
 
-int WdScintilla::findNextMarkers(const int line, const unsigned int mask) const {
+int WdScintilla::findNextMarkers(const int line,
+                                 const unsigned int mask) const {
     return _scintilla->markerFindNext(line, mask);
 }
 
-int WdScintilla::findNextMarkers(const int line, QList<int> const &markers) const {
+int WdScintilla::findNextMarkers(const int line,
+                                 QList<int> const &markers) const {
     return findNextMarkers(line, getMaskFromMarkers(markers));
 }
 
@@ -833,11 +847,13 @@ int WdScintilla::findNextMarker(const int line, const int marker) const {
     return findNextMarkers(line, QList<int>() << marker);
 }
 
-int WdScintilla::findPreviousMarkers(const int line, const unsigned int mask) const {
+int WdScintilla::findPreviousMarkers(const int line,
+                                     const unsigned int mask) const {
     return _scintilla->markerFindPrevious(line, mask);
 }
 
-int WdScintilla::findPreviousMarkers(const int line, QList<int> const &markers) const {
+int WdScintilla::findPreviousMarkers(const int line,
+                                     QList<int> const &markers) const {
     return findPreviousMarkers(line, getMaskFromMarkers(markers));
 }
 
@@ -846,16 +862,15 @@ int WdScintilla::findPreviousMarker(const int line, const int marker) const {
 }
 
 QList<int> WdScintilla::getLinesWithMarkers(const int fromLine,
-        const int toLine,
-        const unsigned int mask) const {
+                                            const int toLine,
+                                            const unsigned int mask) const {
     QList<int> ret;
     int currentLine = fromLine;
     while (1) {
         const int lineMatched = findNextMarkers(currentLine, mask);
         if (lineMatched > toLine || lineMatched < 0) {
             return ret;
-        }
-        else {
+        } else {
             ret << lineMatched;
             currentLine = lineMatched + 1;
         }
@@ -864,37 +879,36 @@ QList<int> WdScintilla::getLinesWithMarkers(const int fromLine,
 }
 
 QList<int> WdScintilla::getLinesWithMarkers(const int fromLine,
-        const int toLine,
-        QList<int> const &markers) const
+                                            const int toLine,
+                                            QList<int> const &markers) const
 
 {
     return getLinesWithMarkers(fromLine, toLine, getMaskFromMarkers(markers));
 }
 
-QList<int> WdScintilla::getLinesWithMarker(const int fromLine,
-        const int toLine,
-        const int marker) const
+QList<int> WdScintilla::getLinesWithMarker(const int fromLine, const int toLine,
+                                           const int marker) const
 
 {
     return getLinesWithMarkers(fromLine, toLine, QList<int>() << marker);
 }
 
 QList<int> WdScintilla::getLinesWithMarkers(const int fromLine,
-        const unsigned int mask) const
+                                            const unsigned int mask) const
 
 {
     return getLinesWithMarkers(fromLine, getNumberLines(), mask);
 }
 
 QList<int> WdScintilla::getLinesWithMarkers(const int fromLine,
-        QList<int> const &markers) const
+                                            QList<int> const &markers) const
 
 {
     return getLinesWithMarkers(fromLine, getMaskFromMarkers(markers));
 }
 
 QList<int> WdScintilla::getLinesWithMarker(const int fromLine,
-        const int marker) const
+                                           const int marker) const
 
 {
     return getLinesWithMarkers(fromLine, QList<int>() << marker);
@@ -943,59 +957,62 @@ void WdScintilla::setStyling(const int length, const int style) const {
 }
 
 void WdScintilla::setForegroundColor(const int numberStyle,
-        QColor const &color) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_STYLESETFORE, numberStyle, color);
+                                     QColor const &color) const {
+    _scintilla->SendScintilla(QsciScintilla::SCI_STYLESETFORE, numberStyle,
+                              color);
 }
 
 void WdScintilla::setBackgroundColor(const int numberStyle,
-        QColor const &color) const {
-    _scintilla->SendScintilla(QsciScintilla::SCI_STYLESETBACK, numberStyle, color);
+                                     QColor const &color) const {
+    _scintilla->SendScintilla(QsciScintilla::SCI_STYLESETBACK, numberStyle,
+                              color);
 }
 
 void WdScintilla::applyStyle(const int pos, const int length,
-                                        const int numberStyle) const {
+                             const int numberStyle) const {
     startStyling(pos, 31);
     setStyling(length, numberStyle);
 }
 
 void WdScintilla::applyStyle(const int lineStart, const int indexStart,
-                                        const int lineEnd, const int indexEnd,
-                                        const int numberStyle) const {
-    const int posStart = _scintilla->positionFromLineIndex(lineStart, indexStart);
+                             const int lineEnd, const int indexEnd,
+                             const int numberStyle) const {
+    const int posStart =
+        _scintilla->positionFromLineIndex(lineStart, indexStart);
     const int posEnd = _scintilla->positionFromLineIndex(lineEnd, indexEnd);
     applyStyle(posStart, posEnd - posStart, numberStyle);
 }
 
 void WdScintilla::applyStyle(const int lineStart, const int indexStart,
-                                        const int length,
-                                        const int numberStyle) const {
-    const int posStart = _scintilla->positionFromLineIndex(lineStart, indexStart);
+                             const int length, const int numberStyle) const {
+    const int posStart =
+        _scintilla->positionFromLineIndex(lineStart, indexStart);
     applyStyle(posStart, length, numberStyle);
 }
 
-
-int WdScintilla::defineIndicator(const WdIndicator style, const int number) const {
+int WdScintilla::defineIndicator(const WdIndicator style,
+                                 const int number) const {
     return _scintilla->indicatorDefine(style, number);
 }
 
 void WdScintilla::setIndicator(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd,
-        const int numberIndicator) const {
-    _scintilla->fillIndicatorRange(lineStart, indexStart,
-                                   lineEnd, indexEnd, numberIndicator);
+                               const int lineEnd, const int indexEnd,
+                               const int numberIndicator) const {
+    _scintilla->fillIndicatorRange(lineStart, indexStart, lineEnd, indexEnd,
+                                   numberIndicator);
 }
 
 void WdScintilla::clearIndicator(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd,
-        const int number) const {
-    _scintilla->clearIndicatorRange(lineStart, indexStart,
-                                    lineEnd, indexEnd, number);
+                                 const int lineEnd, const int indexEnd,
+                                 const int number) const {
+    _scintilla->clearIndicatorRange(lineStart, indexStart, lineEnd, indexEnd,
+                                    number);
 }
 
-void WdScintilla::setIndicatorColor(QColor const &color, const int number) const {
+void WdScintilla::setIndicatorColor(QColor const &color,
+                                    const int number) const {
     _scintilla->setIndicatorForegroundColor(color, number);
 }
-
 
 void WdScintilla::setDocumentBackground(QColor const &color) const {
     _scintilla->setPaper(color);
@@ -1016,7 +1033,7 @@ QColor WdScintilla::getDocumentForeground() const {
 /////////// FOLDING //////////////
 
 void WdScintilla::setFolding(const WdScintilla::WdFoldingStyle style,
-                                        const int margin) const {
+                             const int margin) const {
     _scintilla->setFolding(style, margin);
 }
 
@@ -1031,13 +1048,15 @@ int WdScintilla::getFoldLevelWithMask(const int line) const {
 }
 
 bool WdScintilla::isFoldHeader(const int line) const {
-    int level = _scintilla->SendScintilla(QsciScintilla::SCI_GETFOLDLEVEL, line);
+    int level =
+        _scintilla->SendScintilla(QsciScintilla::SCI_GETFOLDLEVEL, line);
     level &= QsciScintilla::SC_FOLDLEVELHEADERFLAG;
     return level != 0;
 }
 
 bool WdScintilla::isFoldWhiteLine(const int line) const {
-    int level = _scintilla->SendScintilla(QsciScintilla::SCI_GETFOLDLEVEL, line);
+    int level =
+        _scintilla->SendScintilla(QsciScintilla::SCI_GETFOLDLEVEL, line);
     level &= QsciScintilla::SC_FOLDLEVELWHITEFLAG;
     return level != 0;
 }
@@ -1046,8 +1065,7 @@ void WdScintilla::setFoldHeader(const int line, const bool st) const {
     int level = getFoldLevel(line);
     if (st) {
         level |= QsciScintilla::SC_FOLDLEVELHEADERFLAG;
-    }
-    else {
+    } else {
         level = level & ~QsciScintilla::SC_FOLDLEVELHEADERFLAG;
     }
     setFoldLevelWithMask(line, level);
@@ -1057,8 +1075,7 @@ void WdScintilla::setFoldWhiteLine(const int line, const bool st) const {
     int level = getFoldLevel(line);
     if (st) {
         level |= QsciScintilla::SC_FOLDLEVELWHITEFLAG;
-    }
-    else {
+    } else {
         level = level & ~QsciScintilla::SC_FOLDLEVELWHITEFLAG;
     }
     setFoldLevelWithMask(line, level);
@@ -1119,14 +1136,14 @@ void WdScintilla::setFoldPart(const int lineStart, const int lineEnd) const {
 }
 
 void WdScintilla::setFoldPart(const int lineStart, const int lineEnd,
-        const int level) const {
+                              const int level) const {
     for (int i = lineStart; i <= lineEnd; ++i) {
         setFoldLevel(i, level);
     }
 }
 
 void WdScintilla::setFoldPartWithMask(const int lineStart, const int lineEnd,
-        const int level) const {
+                                      const int level) const {
     for (int i = lineStart; i <= lineEnd; ++i) {
         setFoldLevelWithMask(i, level);
     }
@@ -1170,7 +1187,8 @@ void WdScintilla::setUnmatchedBraceForegroundColor(QColor const &color) const {
     _scintilla->setUnmatchedBraceForegroundColor(color);
 }
 
-void WdScintilla::setBracingMatching(const WdScintilla::WdBraceMatch match) const {
+void
+WdScintilla::setBracingMatching(const WdScintilla::WdBraceMatch match) const {
     _scintilla->setBraceMatching(match);
 }
 
@@ -1183,28 +1201,23 @@ void WdScintilla::moveToMatchingBrace() const {
 }
 
 ////// SEARCH _ REPLACE ////////////////
-bool WdScintilla::findFirst(QString const &expr,
-                                       const bool isRegexp,
-                                       const bool isCaseSensitive,
-                                       const bool matchWordOnly,
-                                       const bool searchWrapsEnd,
-                                       const bool searchForward,
-                                       const int fromLine,
-                                       const int fromIndex,
-                                       const bool unfoldTextFound,
-                                       const bool posixRegexp) const {
-    return _scintilla->findFirst(expr, isRegexp, isCaseSensitive,
-                                 matchWordOnly, searchWrapsEnd, searchForward,
-                                 fromLine, fromIndex, unfoldTextFound, posixRegexp);
+bool WdScintilla::findFirst(QString const &expr, const bool isRegexp,
+                            const bool isCaseSensitive,
+                            const bool matchWordOnly, const bool searchWrapsEnd,
+                            const bool searchForward, const int fromLine,
+                            const int fromIndex, const bool unfoldTextFound,
+                            const bool posixRegexp) const {
+    return _scintilla->findFirst(expr, isRegexp, isCaseSensitive, matchWordOnly,
+                                 searchWrapsEnd, searchForward, fromLine,
+                                 fromIndex, unfoldTextFound, posixRegexp);
 }
 
-bool WdScintilla::findFirstInSelection(QString const &expr,
-        const bool isRegexp,
-        const bool isCaseSensitive,
-        const bool matchWordOnly,
-        const bool searchForward,
-        const bool unfoldTextFound,
-        const bool posixRegexp) const {
+bool WdScintilla::findFirstInSelection(QString const &expr, const bool isRegexp,
+                                       const bool isCaseSensitive,
+                                       const bool matchWordOnly,
+                                       const bool searchForward,
+                                       const bool unfoldTextFound,
+                                       const bool posixRegexp) const {
     return _scintilla->findFirstInSelection(expr, isRegexp, isCaseSensitive,
                                             matchWordOnly, searchForward,
                                             unfoldTextFound, posixRegexp);
@@ -1285,8 +1298,10 @@ void WdScintilla::setIndentationGuide(const WdIndentGuide guide) const {
 
 QPoint WdScintilla::getCursorPixelCoord() const {
     const int pos = getCurrentPosition();
-    const int x = _scintilla->SendScintilla(QsciScintilla::SCI_POINTXFROMPOSITION, 0, pos);
-    const int y = _scintilla->SendScintilla(QsciScintilla::SCI_POINTYFROMPOSITION, 0, pos);
+    const int x = _scintilla->SendScintilla(
+        QsciScintilla::SCI_POINTXFROMPOSITION, 0, pos);
+    const int y = _scintilla->SendScintilla(
+        QsciScintilla::SCI_POINTYFROMPOSITION, 0, pos);
     return QPoint(x, y);
 }
 
@@ -1342,15 +1357,15 @@ void WdScintilla::setWrapMode(const WdScintilla::WdWrapMode mode) const {
 }
 
 void WdScintilla::setWrapMode(const WdScintilla::WdWrapMode mode,
-        const WdScintilla::WdWrapVisualFlag start,
-        const WdScintilla::WdWrapVisualFlag end) const {
+                              const WdScintilla::WdWrapVisualFlag start,
+                              const WdScintilla::WdWrapVisualFlag end) const {
     setWrapMode(mode);
     setWrapVisualFlag(start, end);
 }
 
 void WdScintilla::setWrapVisualFlag(const WdScintilla::WdWrapVisualFlag start,
-        const WdScintilla::WdWrapVisualFlag end,
-        const int indent) const {
+                                    const WdScintilla::WdWrapVisualFlag end,
+                                    const int indent) const {
     _scintilla->setWrapVisualFlags(start, end, indent);
 }
 
@@ -1362,8 +1377,8 @@ WdScintilla::WdWrapIndentMode WdScintilla::getWrapIndentMode() const {
     return _scintilla->wrapIndentMode();
 }
 
-void WdScintilla::setWrapIndentMode(const WdScintilla::WdWrapIndentMode mode)
-const {
+void
+WdScintilla::setWrapIndentMode(const WdScintilla::WdWrapIndentMode mode) const {
     _scintilla->setWrapIndentMode(mode);
 }
 
@@ -1372,7 +1387,8 @@ int WdScintilla::getPosition(const int line, const int index) const {
 }
 
 ///////// CONNECT ////////////////
-void WdScintilla::slot_marginClicked(int margin, int line, Qt::KeyboardModifiers) {
+void WdScintilla::slot_marginClicked(int margin, int line,
+                                     Qt::KeyboardModifiers) {
     emit marginClicked(margin, line);
 }
 
@@ -1385,22 +1401,24 @@ void WdScintilla::slot_cursorPositionChanged(int line, int index) {
 }
 
 void WdScintilla::slot_textModified(int pos, int modificationType,
-        const char *text,
-        int length,
-        int /*linesAdded*/,
-        int /*line*/,
-        int /*foldLeveNow*/,
-        int /*foldLevelPrev*/,
-        int /*token*/,
-        int /*annotationLinesAdded*/) {
+                                    const char *text, int length,
+                                    int /*linesAdded*/, int /*line*/,
+                                    int /*foldLeveNow*/, int /*foldLevelPrev*/,
+                                    int /*token*/,
+                                    int /*annotationLinesAdded*/) {
     /*
     SC_MOD_INSERTTEXT = 0x1, SC_MOD_DELETETEXT = 0x2, SC_MOD_CHANGESTYLE = 0x4,
     SC_MOD_CHANGEFOLD = 0x8, SC_PERFORMED_USER = 0x10, SC_PERFORMED_UNDO = 0x20,
-    SC_PERFORMED_REDO = 0x40, SC_MULTISTEPUNDOREDO = 0x80, SC_LASTSTEPINUNDOREDO = 0x100,
-    SC_MOD_CHANGEMARKER = 0x200, SC_MOD_BEFOREINSERT = 0x400, SC_MOD_BEFOREDELETE = 0x800,
-    SC_MULTILINEUNDOREDO = 0x1000, SC_STARTACTION = 0x2000, SC_MOD_CHANGEINDICATOR = 0x4000,
-    SC_MOD_CHANGELINESTATE = 0x8000, SC_MOD_CHANGEMARGIN = 0x10000, SC_MOD_CHANGEANNOTATION = 0x20000,
-    SC_MOD_CONTAINER = 0x40000, SC_MOD_LEXERSTATE = 0x80000, SC_MODEVENTMASKALL = 0xfffff
+    SC_PERFORMED_REDO = 0x40, SC_MULTISTEPUNDOREDO = 0x80, SC_LASTSTEPINUNDOREDO
+    = 0x100,
+    SC_MOD_CHANGEMARKER = 0x200, SC_MOD_BEFOREINSERT = 0x400,
+    SC_MOD_BEFOREDELETE = 0x800,
+    SC_MULTILINEUNDOREDO = 0x1000, SC_STARTACTION = 0x2000,
+    SC_MOD_CHANGEINDICATOR = 0x4000,
+    SC_MOD_CHANGELINESTATE = 0x8000, SC_MOD_CHANGEMARGIN = 0x10000,
+    SC_MOD_CHANGEANNOTATION = 0x20000,
+    SC_MOD_CONTAINER = 0x40000, SC_MOD_LEXERSTATE = 0x80000, SC_MODEVENTMASKALL
+    = 0xfffff
     */
     if (modificationType & _scintilla->SC_MOD_BEFOREDELETE) {
         _textGoingToBeDeleted = getText(pos, pos + length);
@@ -1424,7 +1442,7 @@ void WdScintilla::slot_zoom() {
 
 void WdScintilla::slot_callTip_entryChosen(QString const &text) {
     qDebug() << "slot calltip entry chosen:" << text;
-    //TODO: replace text.
+    // TODO: replace text.
 }
 
 void WdScintilla::slot_lostFocus() {

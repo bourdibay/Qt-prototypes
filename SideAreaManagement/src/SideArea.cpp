@@ -2,13 +2,10 @@
 #include "Area/SideArea.h"
 
 SideArea::SideArea(QWidget *parent)
-    : QWidget(parent),
-    _stackComponents(new QStackedWidget())
-{
+: QWidget(parent), _stackComponents(new QStackedWidget()) {
 }
 
-bool SideArea::addComponent(SideAreaComponent *component)
-{
+bool SideArea::addComponent(SideAreaComponent *component) {
     const int index = _stackComponents->indexOf(component);
     if (index < 0) {
         _stackComponents->addWidget(component);
@@ -19,8 +16,7 @@ bool SideArea::addComponent(SideAreaComponent *component)
 }
 
 void SideArea::insertComponent(SideAreaComponent *before,
-                               SideAreaComponent *component)
-{
+                               SideAreaComponent *component) {
     int indexBefore = _components.indexOf(before);
     if (indexBefore < 0) {
         indexBefore = 0;
@@ -35,8 +31,7 @@ void SideArea::insertComponent(SideAreaComponent *before,
     }
 }
 
-bool SideArea::takeComponent(SideAreaComponent *component)
-{
+bool SideArea::takeComponent(SideAreaComponent *component) {
     const int idx = _components.indexOf(component);
     if (idx >= 0) {
         SideAreaComponent *cmp = _components.takeAt(idx);
@@ -46,20 +41,17 @@ bool SideArea::takeComponent(SideAreaComponent *component)
     return false;
 }
 
-void SideArea::setCurrentComponent(SideAreaComponent *component)
-{
+void SideArea::setCurrentComponent(SideAreaComponent *component) {
     const int index = _components.indexOf(component);
     if (index >= 0) {
         _stackComponents->setCurrentWidget(component);
     }
 }
 
-SideAreaComponent *SideArea::getComponent(QString const &key) const
-{
+SideAreaComponent *SideArea::getComponent(QString const &key) const {
     const auto &end = std::end(_components);
-    const auto &it = std::find_if(std::begin(_components), end, 
-        [&key] (SideAreaComponent *cmp) {
-            return cmp->getKey() == key;
-    });
+    const auto &it = std::find_if(
+        std::begin(_components), end,
+        [&key](SideAreaComponent *cmp) { return cmp->getKey() == key; });
     return it != end ? *it : nullptr;
 }

@@ -17,24 +17,20 @@
 #include "WdAction.h"
 
 WdAction::WdAction(QAction *action, QString const &keyname)
-    : QAction(action), _key(keyname) {
+: QAction(action), _key(keyname) {
 }
 
 WdAction::WdAction(QString const &keyname, QObject *parent)
-    : QAction(parent), _key(keyname) {
+: QAction(parent), _key(keyname) {
 }
 
-WdAction::WdAction(QString const &keyname,
-                              QString const &text,
-                              QObject *parent)
-    : QAction(text, parent), _key(keyname) {
+WdAction::WdAction(QString const &keyname, QString const &text, QObject *parent)
+: QAction(text, parent), _key(keyname) {
 }
 
-WdAction::WdAction(QString const &keyname,
-                              QIcon const &icon,
-                              QString const &text,
-                              QObject *parent)
-    : QAction(icon, text, parent), _key(keyname) {
+WdAction::WdAction(QString const &keyname, QIcon const &icon,
+                   QString const &text, QObject *parent)
+: QAction(icon, text, parent), _key(keyname) {
 }
 
 QString const &WdAction::getKey() const {

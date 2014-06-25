@@ -20,12 +20,11 @@
 #include "TextEditor/ScintillaCommandPrivate.h"
 
 ScintillaPrivate::ScintillaPrivate(QWidget *parent)
-    : QsciScintilla(parent),
-      _contextualMenu(new QMenu(this)),
-      _callTip(new CallTip(this)) {
+: QsciScintilla(parent)
+, _contextualMenu(new QMenu(this))
+, _callTip(new CallTip(this)) {
     installEventFilter(this);
     ScintillaCommandPrivate(this);
-
 }
 
 bool ScintillaPrivate::event(QEvent *ev) {
@@ -78,43 +77,41 @@ bool ScintillaPrivate::eventFilter(QObject *obj, QEvent *ev) {
             const int key = keyEvent->key();
 
             switch (key) {
-            case Qt::Key_Down:
-            case Qt::Key_Up:
-                if (keyEvent->modifiers() != Qt::NoModifier) {
-                    hideCallTip();
-                }
-                else {
-                    _callTip->sendEvents(keyEvent);
-                    if (keyEvent->isAccepted()) {
-                        qDebug() << "return true";
-                        return true;
+                case Qt::Key_Down:
+                case Qt::Key_Up:
+                    if (keyEvent->modifiers() != Qt::NoModifier) {
+                        hideCallTip();
+                    } else {
+                        _callTip->sendEvents(keyEvent);
+                        if (keyEvent->isAccepted()) {
+                            qDebug() << "return true";
+                            return true;
+                        }
                     }
-                }
-                break;
-            case Qt::Key_Right:
-            case Qt::Key_Left:
-                if (hasCallTipFocus()) {
-                    qDebug() << ";eft right ok";
-                    hideCallTip();
-                }
-                break;
-            case Qt::Key_Enter:
-            case Qt::Key_Return:
-                if (keyEvent->modifiers() != Qt::NoModifier) {
-                    hideCallTip();
-                }
-                else {
-                    _callTip->sendEvents(keyEvent);
-                    if (keyEvent->isAccepted()) {
-                        qDebug() << "accepted";
-                        return true;
+                    break;
+                case Qt::Key_Right:
+                case Qt::Key_Left:
+                    if (hasCallTipFocus()) {
+                        qDebug() << ";eft right ok";
+                        hideCallTip();
                     }
-                    qDebug() << "not accepted";
-                }
-                break;
-            case Qt::Key_Escape:
-                hideCallTip();
-                break;
+                    break;
+                case Qt::Key_Enter:
+                case Qt::Key_Return:
+                    if (keyEvent->modifiers() != Qt::NoModifier) {
+                        hideCallTip();
+                    } else {
+                        _callTip->sendEvents(keyEvent);
+                        if (keyEvent->isAccepted()) {
+                            qDebug() << "accepted";
+                            return true;
+                        }
+                        qDebug() << "not accepted";
+                    }
+                    break;
+                case Qt::Key_Escape:
+                    hideCallTip();
+                    break;
             }
         }
     }

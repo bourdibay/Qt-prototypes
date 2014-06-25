@@ -11,9 +11,7 @@ class QSize;
 class QColor;
 class QTextCursor;
 
-
-class EditorSidebar : public QWidget
-{
+class EditorSidebar : public QWidget {
     Q_OBJECT
 public:
     EditorSidebar(TextEditor *editor, QWidget *parent = nullptr);
@@ -22,8 +20,8 @@ public:
     virtual QSize sizeHint() const;
     void setMarginColor(QColor const &color);
 
-    public slots:
-        virtual void scroll(const int verticalScroll);
+public slots:
+    virtual void scroll(const int verticalScroll);
 
 protected:
     virtual void paintEvent(QPaintEvent *ev);

@@ -21,25 +21,20 @@
 #include "WdAction.h"
 
 WdMenu::WdMenu(QString const &keyname, QWidget *parent)
-    : QMenu(parent), _key(keyname), _actions(), _menus() {
+: QMenu(parent), _key(keyname), _actions(), _menus() {
 }
 
-WdMenu::WdMenu(QString const &keyname,
-                          QString const &title,
-                          QWidget *parent)
-    : QMenu(title, parent),
-      _key(keyname), _actions(), _menus() {
+WdMenu::WdMenu(QString const &keyname, QString const &title, QWidget *parent)
+: QMenu(title, parent), _key(keyname), _actions(), _menus() {
 }
 
 WdMenu::~WdMenu() {
-    for (auto it = std::begin(_menus);
-         it != std::end(_menus); ++it) {
+    for (auto it = std::begin(_menus); it != std::end(_menus); ++it) {
         WdMenu *menu = it.value();
         menu->removeAction(menu->menuAction());
         delete menu;
     }
-    for (auto it = std::begin(_actions);
-         it != std::end(_actions); ++it) {
+    for (auto it = std::begin(_actions); it != std::end(_actions); ++it) {
         WdAction *action = it.value();
         this->removeAction(action);
         delete action;
@@ -52,20 +47,17 @@ void WdMenu::addWdAction(WdAction *action) {
     if (keyExists(action->getKey())) {
         // already exists, warning
         qWarning() << "The key " << action->getKey() << "already exists";
-    }
-    else {
+    } else {
         this->addAction(action);
         _actions[action->getKey()] = action;
     }
 }
 
-WdAction *WdMenu::addWdAction(const QString &keyname,
-        QString const &text) {
+WdAction *WdMenu::addWdAction(const QString &keyname, QString const &text) {
     if (keyExists(keyname)) {
         // already exists, warning
         qWarning() << "The key " << keyname << "already exists";
-    }
-    else {
+    } else {
         WdAction *action = new WdAction(keyname, text, this);
         this->addWdAction(action);
         return action;
@@ -73,8 +65,8 @@ WdAction *WdMenu::addWdAction(const QString &keyname,
     return nullptr;
 }
 
-WdAction *WdMenu::addWdAction(QString const &keyname,
-        QIcon const &icon, QString const &text) {
+WdAction *WdMenu::addWdAction(QString const &keyname, QIcon const &icon,
+                              QString const &text) {
     auto action = addWdAction(keyname, text);
     if (action) {
         action->setIcon(icon);
@@ -82,9 +74,9 @@ WdAction *WdMenu::addWdAction(QString const &keyname,
     return action;
 }
 
-WdAction *WdMenu::addWdAction(QString const &keyname,
-        QString const &text, QObject const *receiver,
-        const char *slotName, const QKeySequence &shortcut) {
+WdAction *WdMenu::addWdAction(QString const &keyname, QString const &text,
+                              QObject const *receiver, const char *slotName,
+                              const QKeySequence &shortcut) {
     auto action = addWdAction(keyname, text);
     if (action) {
         QObject::connect(action, SIGNAL(triggered(bool)), receiver, slotName);
@@ -93,10 +85,10 @@ WdAction *WdMenu::addWdAction(QString const &keyname,
     return action;
 }
 
-WdAction *WdMenu::addWdAction(QString const &keyname,
-        QIcon const &icon,
-        QString const &text, QObject const *receiver,
-        const char *slotName, const QKeySequence &shortcut) {
+WdAction *WdMenu::addWdAction(QString const &keyname, QIcon const &icon,
+                              QString const &text, QObject const *receiver,
+                              const char *slotName,
+                              const QKeySequence &shortcut) {
     auto action = addWdAction(keyname, text, receiver, slotName, shortcut);
     if (action) {
         action->setIcon(icon);
@@ -108,20 +100,17 @@ void WdMenu::addWdMenu(WdMenu *menu) {
     if (keyExists(menu->getKey())) {
         // already exists, warning
         qWarning() << "The key " << menu->getKey() << "already exists";
-    }
-    else {
+    } else {
         this->addMenu(menu);
         _menus[menu->getKey()] = menu;
     }
 }
 
-WdMenu *WdMenu::addWdMenu(QString const &keyname,
-        QString const &title) {
+WdMenu *WdMenu::addWdMenu(QString const &keyname, QString const &title) {
     if (keyExists(keyname)) {
         // already exists, warning
         qWarning() << "The key " << keyname << "already exists";
-    }
-    else {
+    } else {
         WdMenu *menu = new WdMenu(keyname, title);
         this->addWdMenu(menu);
         return menu;
@@ -129,9 +118,8 @@ WdMenu *WdMenu::addWdMenu(QString const &keyname,
     return nullptr;
 }
 
-WdMenu *WdMenu::addWdMenu(QString const &keyname,
-        QIcon const &icon,
-        QString const &title) {
+WdMenu *WdMenu::addWdMenu(QString const &keyname, QIcon const &icon,
+                          QString const &title) {
     auto menu = addWdMenu(keyname, title);
     if (menu) {
         menu->setIcon(icon);
@@ -139,8 +127,7 @@ WdMenu *WdMenu::addWdMenu(QString const &keyname,
     return menu;
 }
 
-WdAction *WdMenu::addWdSection(QString const &keyname,
-        QString const &text) {
+WdAction *WdMenu::addWdSection(QString const &keyname, QString const &text) {
     auto action = addWdAction(keyname, text);
     if (action) {
         action->setSeparator(true);
@@ -148,9 +135,8 @@ WdAction *WdMenu::addWdSection(QString const &keyname,
     return action;
 }
 
-WdAction *WdMenu::addWdSection(QString const &keyname,
-        QIcon const &icon,
-        QString const &text) {
+WdAction *WdMenu::addWdSection(QString const &keyname, QIcon const &icon,
+                               QString const &text) {
     auto action = addWdSection(keyname, text);
     if (action) {
         action->setIcon(icon);
@@ -158,14 +144,12 @@ WdAction *WdMenu::addWdSection(QString const &keyname,
     return action;
 }
 
-WdAction *WdMenu::insertWdSection(QAction *before,
-        QString const &keyname,
-        QString const &text) {
+WdAction *WdMenu::insertWdSection(QAction *before, QString const &keyname,
+                                  QString const &text) {
     if (keyExists(keyname)) {
         // already exists, warning
         qWarning() << "The key " << keyname << "already exists";
-    }
-    else {
+    } else {
         WdAction *action = new WdAction(keyname, text, this);
         action->setSeparator(true);
         this->insertAction(before, action);
@@ -175,10 +159,8 @@ WdAction *WdMenu::insertWdSection(QAction *before,
     return nullptr;
 }
 
-WdAction *WdMenu::insertWdSection(QAction *before,
-        QString const &keyname,
-        QIcon const &icon,
-        QString const &text) {
+WdAction *WdMenu::insertWdSection(QAction *before, QString const &keyname,
+                                  QIcon const &icon, QString const &text) {
     auto action = insertWdSection(before, keyname, text);
     if (action) {
         action->setIcon(icon);
@@ -186,14 +168,12 @@ WdAction *WdMenu::insertWdSection(QAction *before,
     return action;
 }
 
-WdMenu *WdMenu::insertWdMenu(QAction *before,
-        QString const &keyname,
-        QString const &text) {
+WdMenu *WdMenu::insertWdMenu(QAction *before, QString const &keyname,
+                             QString const &text) {
     if (keyExists(keyname)) {
         qWarning() << "The key" << keyname << "already exists";
         return nullptr;
-    }
-    else {
+    } else {
         WdMenu *menu = new WdMenu(keyname, text);
         insertWdMenu(before, menu);
         return menu;
@@ -201,10 +181,8 @@ WdMenu *WdMenu::insertWdMenu(QAction *before,
     return nullptr;
 }
 
-WdMenu *WdMenu::insertWdMenu(QAction *before,
-        QString const &keyname,
-        QIcon const &icon,
-        QString const &text) {
+WdMenu *WdMenu::insertWdMenu(QAction *before, QString const &keyname,
+                             QIcon const &icon, QString const &text) {
     WdMenu *menu = insertWdMenu(before, keyname, text);
     if (menu) {
         menu->setIcon(icon);
@@ -212,13 +190,11 @@ WdMenu *WdMenu::insertWdMenu(QAction *before,
     return nullptr;
 }
 
-bool WdMenu::insertWdMenu(QAction *before,
-                                     WdMenu *menu) {
+bool WdMenu::insertWdMenu(QAction *before, WdMenu *menu) {
     if (keyExists(menu->getKey())) {
         qWarning() << "The key" << menu->getKey() << "already exists";
         return false;
-    }
-    else {
+    } else {
         _menus[menu->getKey()] = menu;
         insertMenu(before, menu);
         return true;
@@ -226,14 +202,12 @@ bool WdMenu::insertWdMenu(QAction *before,
     return false;
 }
 
-WdAction *WdMenu::insertWdAction(QAction *before,
-        QString const &keyname,
-        QString const &text) {
+WdAction *WdMenu::insertWdAction(QAction *before, QString const &keyname,
+                                 QString const &text) {
     if (keyExists(keyname)) {
         qWarning() << "The key" << keyname << "already exists";
         return nullptr;
-    }
-    else {
+    } else {
         WdAction *action = new WdAction(keyname, text, this);
         insertWdAction(before, action);
         return action;
@@ -241,10 +215,8 @@ WdAction *WdMenu::insertWdAction(QAction *before,
     return nullptr;
 }
 
-WdAction *WdMenu::insertWdAction(QAction *before,
-        QString const &keyname,
-        QIcon const &icon,
-        QString const &text) {
+WdAction *WdMenu::insertWdAction(QAction *before, QString const &keyname,
+                                 QIcon const &icon, QString const &text) {
     WdAction *action = insertWdAction(before, keyname, text);
     if (action) {
         action->setIcon(icon);
@@ -252,13 +224,11 @@ WdAction *WdMenu::insertWdAction(QAction *before,
     return nullptr;
 }
 
-bool WdMenu::insertWdAction(QAction *before,
-                                       WdAction *action) {
+bool WdMenu::insertWdAction(QAction *before, WdAction *action) {
     if (keyExists(action->getKey())) {
         qWarning() << "The key" << action->getKey() << "already exists";
         return false;
-    }
-    else {
+    } else {
         _actions[action->getKey()] = action;
         insertAction(before, action);
         return true;
@@ -271,8 +241,7 @@ void WdMenu::removeWdAction(QString const &keyname) {
     if (!action) {
         // does not exist
         qWarning() << "The key " << keyname << "does not exist";
-    }
-    else {
+    } else {
         _actions.remove(keyname);
         this->removeAction(action);
     }
@@ -283,8 +252,7 @@ bool WdMenu::removeRootWdMenu(QString const &keyname) {
     if (!menu) {
         // does not exist
         qWarning() << "The key " << keyname << "does not exist";
-    }
-    else {
+    } else {
         _menus.remove(keyname);
         this->removeAction(menu->menuAction());
         delete menu;
@@ -296,11 +264,9 @@ bool WdMenu::removeRootWdMenu(QString const &keyname) {
 bool WdMenu::removeWdMenu(QString const &keyname) {
     if (removeRootWdMenu(keyname)) {
         return true;
-    }
-    else {
+    } else {
         // we search deeper
-        for (auto it = std::begin(_menus);
-             it != std::end(_menus); ++it) {
+        for (auto it = std::begin(_menus); it != std::end(_menus); ++it) {
             if (it.value()->removeRootWdMenu(keyname)) {
                 return true;
             }
@@ -320,11 +286,9 @@ WdAction *WdMenu::getRootWdAction(QString const &keyname) const {
 WdMenu *WdMenu::getWdActionContainer(QString const &keyname) {
     if (getRootWdAction(keyname)) {
         return this;
-    }
-    else {
+    } else {
         // we search deeper
-        for (auto it = std::begin(_menus);
-             it != std::end(_menus); ++it) {
+        for (auto it = std::begin(_menus); it != std::end(_menus); ++it) {
             WdMenu *menu = it.value()->getWdActionContainer(keyname);
             if (menu) {
                 return menu;
@@ -338,11 +302,9 @@ WdAction *WdMenu::getWdAction(QString const &keyname) const {
     WdAction *action = getRootWdAction(keyname);
     if (action) {
         return action;
-    }
-    else {
+    } else {
         // we search deeper
-        for (auto it = std::begin(_menus);
-             it != std::end(_menus); ++it) {
+        for (auto it = std::begin(_menus); it != std::end(_menus); ++it) {
             action = it.value()->getWdAction(keyname);
             if (action) {
                 return action;
@@ -363,11 +325,9 @@ WdMenu *WdMenu::getRootWdMenu(QString const &keyname) const {
 WdMenu *WdMenu::getWdMenuContainer(QString const &keyname) {
     if (getRootWdMenu(keyname)) {
         return this;
-    }
-    else {
+    } else {
         // we search deeper
-        for (auto it = std::begin(_menus);
-             it != std::end(_menus); ++it) {
+        for (auto it = std::begin(_menus); it != std::end(_menus); ++it) {
             WdMenu *menu = it.value()->getRootWdMenu(keyname);
             if (menu) {
                 return it.value();
@@ -381,11 +341,9 @@ WdMenu *WdMenu::getWdMenu(QString const &keyname) const {
     WdMenu *menu = getRootWdMenu(keyname);
     if (menu) {
         return menu;
-    }
-    else {
+    } else {
         // we search deeper
-        for (auto it = std::begin(_menus);
-             it != std::end(_menus); ++it) {
+        for (auto it = std::begin(_menus); it != std::end(_menus); ++it) {
             menu = it.value()->getWdMenu(keyname);
             if (menu) {
                 return menu;

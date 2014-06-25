@@ -41,9 +41,7 @@ public:
     * \param title The text displayed.
     * \param parent The parent.
     */
-    WdMenu(QString const &keyname,
-           QString const &title,
-           QWidget *parent = 0);
+    WdMenu(QString const &keyname, QString const &title, QWidget *parent = 0);
 
     virtual ~WdMenu();
 
@@ -58,29 +56,28 @@ public:
     * \param text The text displayed.
     * \return The wdAction created and added.
     */
-    WdAction *addWdAction(const QString &keyname,
+    WdAction *addWdAction(const QString &keyname, QString const &text);
+    /**
+    * \brief Add a wdAction tp the menu.
+    * \param keyname The keyname.
+    * \param icon The icon.
+    * \param text The text displayed.
+    * \return The wdAction created and added.
+    */
+    WdAction *addWdAction(QString const &keyname, QIcon const &icon,
                           QString const &text);
     /**
     * \brief Add a wdAction tp the menu.
     * \param keyname The keyname.
-    * \param icon The icon.
-    * \param text The text displayed.
-    * \return The wdAction created and added.
-    */
-    WdAction *addWdAction(QString const &keyname,
-                          QIcon const &icon, QString const &text) ;
-    /**
-    * \brief Add a wdAction tp the menu.
-    * \param keyname The keyname.
     * \param text The text displayed.
     * \param receiver The receiver of the signal clicked().
     * \param slotName The slot name called.
     * \param shortcut The shortcut that can trigger the signal.
     * \return The wdAction created and added.
     */
-    WdAction *addWdAction(QString const &keyname,
-                          QString const &text, QObject const *receiver,
-                          const char *slotName, const QKeySequence &shortcut = 0);
+    WdAction *addWdAction(QString const &keyname, QString const &text,
+                          QObject const *receiver, const char *slotName,
+                          const QKeySequence &shortcut = 0);
     /**
     * \brief Add a wdAction tp the menu.
     * \param keyname The keyname.
@@ -91,10 +88,10 @@ public:
     * \param shortcut The shortcut that can trigger the signal.
     * \return The wdAction created and added.
     */
-    WdAction *addWdAction(QString const &keyname,
-                          QIcon const &icon,
+    WdAction *addWdAction(QString const &keyname, QIcon const &icon,
                           QString const &text, QObject const *receiver,
-                          const char *slotName, const QKeySequence &shortcut = 0);
+                          const char *slotName,
+                          const QKeySequence &shortcut = 0);
     /**
     * \brief Add a wdMenu to the menu.
     * \param menu The menu to add.
@@ -106,8 +103,7 @@ public:
     * \param title The text displayed.
     * \return The menu created and added.
     */
-    WdMenu *addWdMenu(QString const &keyname,
-                      QString const &title);
+    WdMenu *addWdMenu(QString const &keyname, QString const &title);
     /**
     * \brief Add a wdMenu to the menu.
     * \param keyname The keyname.
@@ -115,8 +111,7 @@ public:
     * \param title The text displayed.
     * \return The menu created and added.
     */
-    WdMenu *addWdMenu(QString const &keyname,
-                      QIcon const &icon,
+    WdMenu *addWdMenu(QString const &keyname, QIcon const &icon,
                       QString const &title);
     /**
     * \brief Add a wdAction to the menu followed by a separator.
@@ -124,8 +119,7 @@ public:
     * \param text The text displayed.
     * \return The action created and added.
     */
-    WdAction *addWdSection(QString const &keyname,
-                           QString const &text);
+    WdAction *addWdSection(QString const &keyname, QString const &text);
     /**
     * \brief Add a wdAction to the menu followed by a separator.
     * \param keyname The keyname.
@@ -133,8 +127,7 @@ public:
     * \param text The text displayed.
     * \return The action created and added.
     */
-    WdAction *addWdSection(QString const &keyname,
-                           QIcon const &icon,
+    WdAction *addWdSection(QString const &keyname, QIcon const &icon,
                            QString const &text);
     /**
     * \brief Insert a wdAction to the menu followed by a separator.
@@ -143,8 +136,7 @@ public:
     * \param text The text displayed.
     * \return The action created and added.
     */
-    WdAction *insertWdSection(QAction *before,
-                              QString const &keyname,
+    WdAction *insertWdSection(QAction *before, QString const &keyname,
                               QString const &text);
     /**
     * \brief Insert a wdAction to the menu followed by a separator.
@@ -154,10 +146,8 @@ public:
     * \param text The text displayed.
     * \return The action created and added.
     */
-    WdAction *insertWdSection(QAction *before,
-                              QString const &keyname,
-                              QIcon const &icon,
-                              QString const &text);
+    WdAction *insertWdSection(QAction *before, QString const &keyname,
+                              QIcon const &icon, QString const &text);
     /**
     * \brief Insert a wdMenu to the menu.
     * \param before The previous action in the menu where to insert.
@@ -165,8 +155,7 @@ public:
     * \param text The text displayed.
     * \return The menu created and added.
     */
-    WdMenu *insertWdMenu(QAction *before,
-                         QString const &keyname,
+    WdMenu *insertWdMenu(QAction *before, QString const &keyname,
                          QString const &text);
     /**
     * \brief Insert a wdMenu to the menu.
@@ -176,18 +165,15 @@ public:
     * \param text The text displayed.
     * \return The menu created and added.
     */
-    WdMenu *insertWdMenu(QAction *before,
-                         QString const &keyname,
-                         QIcon const &icon,
-                         QString const &text);
+    WdMenu *insertWdMenu(QAction *before, QString const &keyname,
+                         QIcon const &icon, QString const &text);
     /**
     * \brief Insert a wdMenu to the menu.
     * \param before The previous action in the menu where to insert.
     * \param menu The menu to insert.
     * \return True if we inserted it.
     */
-    bool insertWdMenu(QAction *before,
-                      WdMenu *menu);
+    bool insertWdMenu(QAction *before, WdMenu *menu);
     /**
     * \brief Insert a wdAction to the menu.
     * \param before The previous action in the menu where to insert.
@@ -195,8 +181,7 @@ public:
     * \param text The text displayed.
     * \return The action created and added.
     */
-    WdAction *insertWdAction(QAction *before,
-                             QString const &keyname,
+    WdAction *insertWdAction(QAction *before, QString const &keyname,
                              QString const &text);
     /**
     * \brief Insert a wdAction to the menu.
@@ -206,18 +191,15 @@ public:
     * \param text The text displayed.
     * \return The action created and added.
     */
-    WdAction *insertWdAction(QAction *before,
-                             QString const &keyname,
-                             QIcon const &icon,
-                             QString const &text);
+    WdAction *insertWdAction(QAction *before, QString const &keyname,
+                             QIcon const &icon, QString const &text);
     /**
     * \brief Insert a wdAction to the menu.
     * \param before The previous action in the menu where to insert.
     * \param action The action to insert.
     * \return True if the action is inserted.
     */
-    bool insertWdAction(QAction *before,
-                        WdAction *action);
+    bool insertWdAction(QAction *before, WdAction *action);
 
     /**
     * \brief Remove the wdAction.
@@ -290,9 +272,9 @@ public:
 private:
     Q_DISABLE_COPY(WdMenu);
 
-    const QString _key; /**< The keyname of the menu. */
+    const QString _key;                 /**< The keyname of the menu. */
     QMap<QString, WdAction *> _actions; /**< The list of actions in the menu. */
-    QMap<QString, WdMenu *> _menus; /**< The tree of menus. */
+    QMap<QString, WdMenu *> _menus;     /**< The tree of menus. */
 };
 
 #endif

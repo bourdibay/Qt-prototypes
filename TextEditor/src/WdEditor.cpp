@@ -5,12 +5,11 @@
 #include "TextEditor/WdEditor.h"
 
 WdEditor::WdEditor(QWidget *parent)
-    : QWidget(parent),
-    _layout(new QHBoxLayout()),
-    _textEditor(new TextEditor(this)),
-    _lineNumberSidebar(new LineNumberSidebar(_textEditor, this)),
-    _breakpointSidebar(new BreakpointSidebar(_textEditor, this))
-{
+: QWidget(parent)
+, _layout(new QHBoxLayout())
+, _textEditor(new TextEditor(this))
+, _lineNumberSidebar(new LineNumberSidebar(_textEditor, this))
+, _breakpointSidebar(new BreakpointSidebar(_textEditor, this)) {
     setLayout(_layout);
     _layout->setSpacing(0);
     _layout->setContentsMargins(0, 0, 0, 0);
@@ -20,29 +19,20 @@ WdEditor::WdEditor(QWidget *parent)
     _layout->addWidget(_textEditor);
 
     connect(_textEditor, &QPlainTextEdit::cursorPositionChanged, this,
-        [this] () {
-            emit cursorPositionChanged();
-    });
+            [this]() { emit cursorPositionChanged(); });
     connect(_textEditor, &QPlainTextEdit::selectionChanged, this,
-        [this] () {
-            emit selectionChanged();
-    });
+            [this]() { emit selectionChanged(); });
     connect(_textEditor, &TextEditor::textRemoved, this,
-        [this] (const int position, const int nbCharsRemoved) {
-            emit textRemoved(position, nbCharsRemoved);
+            [this](const int position, const int nbCharsRemoved) {
+        emit textRemoved(position, nbCharsRemoved);
     });
     connect(_textEditor, &TextEditor::textAdded, this,
-        [this] (const int position, const QString &text) {
-            emit textAdded(position, text);
-    });
+            [this](const int position,
+                   const QString &text) { emit textAdded(position, text); });
     connect(_textEditor, &TextEditor::hasFocus, this,
-        [this] () {
-            emit documentHasFocus();
-    });
+            [this]() { emit documentHasFocus(); });
     connect(_textEditor, &TextEditor::losesFocus, this,
-        [this] () {
-            emit documentLosesFocus();
-    });
+            [this]() { emit documentLosesFocus(); });
 
     QFontDatabase::addApplicationFont(":/font/Inconsolata-Regular.ttf");
 #ifdef Q_OS_WIN
@@ -56,14 +46,14 @@ WdEditor::WdEditor(QWidget *parent)
     _textEditor->setFont(font);
 }
 
-QTextDocument *WdEditor::openFile(QString const &filename)
-{
+QTextDocument *WdEditor::openFile(QString const &filename) {
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
         const QString text = file.readAll();
         QTextDocument *document = new QTextDocument(_textEditor);
         document->setPlainText(text);
-        QPlainTextDocumentLayout *layout = new QPlainTextDocumentLayout(document);
+        QPlainTextDocumentLayout *layout =
+            new QPlainTextDocumentLayout(document);
         document->setDocumentLayout(layout);
         setDocument(document);
         return document;

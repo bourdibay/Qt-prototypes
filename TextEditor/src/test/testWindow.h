@@ -19,11 +19,9 @@
 
 //#define ENABLE_DOUBLE_TEST
 
-class WindowTest : public QMainWindow
-{
+class WindowTest : public QMainWindow {
     Q_OBJECT
 public:
-
     WindowTest() {
         QWidget *cont = new QWidget();
         QHBoxLayout *layout = new QHBoxLayout();
@@ -56,23 +54,19 @@ public:
         connect(next, SIGNAL(clicked()), this, SLOT(nextClicked()));
         connect(col, SIGNAL(clicked()), this, SLOT(colClicked()));
 
-        connect(editor, &WdEditor::cursorPositionChanged, this, 
-            [this] { 
-                qDebug() << "Cursor changed";
-                editor->hideCallTipAutoCompletion();
+        connect(editor, &WdEditor::cursorPositionChanged, this, [this] {
+            qDebug() << "Cursor changed";
+            editor->hideCallTipAutoCompletion();
         });
-        connect(editor, &WdEditor::selectionChanged, this, 
-            [this] {
-                qDebug() << "new seelction:" << editor->getSelectedText();
+        connect(editor, &WdEditor::selectionChanged, this, [this] {
+            qDebug() << "new seelction:" << editor->getSelectedText();
         });
-        connect(editor, &WdEditor::textAdded, this, [] (const int pos, QString const &txt) {
-            qDebug() << "text added:" << txt;
-        });
+        connect(editor, &WdEditor::textAdded, this,
+                [](const int pos,
+                   QString const &txt) { qDebug() << "text added:" << txt; });
 
-        
-
-        QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+Space"), this, SLOT(showAutoComplete()));
-
+        QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+Space"), this,
+                                            SLOT(showAutoComplete()));
     }
 
     WdEditor *editor;
@@ -83,39 +77,37 @@ public:
     QPushButton *next;
     QPushButton *col;
 
-    public slots:
-        void showAutoComplete() {
-            editor->showCallTipAutoCompletion();
-        }
+public slots:
+    void showAutoComplete() { editor->showCallTipAutoCompletion(); }
 
-        void addClicked() {
-            qDebug() << "we add a doc";
-            QString file = QFileDialog::getOpenFileName();
-            if (file.isEmpty() == false) {
-                _documents.push_back(editor->openFile(file));
-            }
+    void addClicked() {
+        qDebug() << "we add a doc";
+        QString file = QFileDialog::getOpenFileName();
+        if (file.isEmpty() == false) {
+            _documents.push_back(editor->openFile(file));
         }
+    }
 
-        void nextClicked() {
-            ++idx;
-            qDebug() << "Go to next idx=" << idx;
-            if (idx >= _documents.size()) {
-                qDebug() << "reset index";
-                idx = 0;
-            }
-            editor->setDocument(_documents[idx]);
+    void nextClicked() {
+        ++idx;
+        qDebug() << "Go to next idx=" << idx;
+        if (idx >= _documents.size()) {
+            qDebug() << "reset index";
+            idx = 0;
+        }
+        editor->setDocument(_documents[idx]);
 #if defined ENABLE_DOUBLE_TEST
-            editor2->setDocument(_documents[idx]);
+        editor2->setDocument(_documents[idx]);
 #endif
-            qDebug() << "text 4, 9=" << editor->getText(3343, 10);
-            qDebug() << "pos=" << editor->positionFromLine(1, 5);
-        }
+        qDebug() << "text 4, 9=" << editor->getText(3343, 10);
+        qDebug() << "pos=" << editor->positionFromLine(1, 5);
+    }
 
-        void colClicked() {
-            const int pos = editor->getCurrentPosition();
-            qDebug() << "pos=" << pos;
-            editor->setColor(pos, 8, QColor("red"));
-        }
+    void colClicked() {
+        const int pos = editor->getCurrentPosition();
+        qDebug() << "pos=" << pos;
+        editor->setColor(pos, 8, QColor("red"));
+    }
 
 public:
     QList<QTextDocument *> _documents;

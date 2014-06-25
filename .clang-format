@@ -1,0 +1,12 @@
+BasedOnStyle: LLVM
+UseTab: Never
+IndentWidth: 4
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+AccessModifierOffset: -4
+ConstructorInitializerIndentWidth: 0
+AlwaysBreakTemplateDeclarations: true
+AllowShortFunctionsOnASingleLine: Inline
+IndentCaseLabels: true
+BreakConstructorInitializersBeforeComma: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true

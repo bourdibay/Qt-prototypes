@@ -2,19 +2,20 @@
 #ifndef __TREE_VIEW_MODEL_H__
 #define __TREE_VIEW_MODEL_H__
 
+// Qt
 #include <QVector>
 #include <QVariant>
-#include <QModelIndex>
-#include <QStringList>
-#include <QAbstractItemModel>
-#include <QSharedPointer>
 #include <QTreeView>
 #include <QMimeData>
+#include <QModelIndex>
+#include <QStringList>
+#include <QSharedPointer>
+#include <QAbstractItemModel>
 
-//TODO: TO FIX: bug when we drag drop the same item in itself in another view. (see ModelSharing test)
+// TODO: TO FIX: bug when we drag drop the same item in itself
+// in another view. (see ModelSharing test)
 
-class ATreeItem
-{
+class ATreeItem {
 public:
     ATreeItem(ATreeItem *parent = nullptr);
     virtual ~ATreeItem();
@@ -27,12 +28,12 @@ public:
     virtual bool appendChild(ATreeItem *child);
     virtual bool removeChildren(const int position, const int count);
     virtual Qt::ItemFlags flags(const int /*column*/) const;
+    virtual bool setData(int column, const QVariant &value, int role);
 
     // Pure methods
     virtual int columnCount() const = 0;
     virtual QVariant data(int column, int role) const = 0;
-    virtual bool setData(int column, const QVariant &value, int role) = 0;
-    virtual ATreeItem *clone() const  = 0;
+    virtual ATreeItem *clone() const = 0;
 
     // Callback methods called after receiving a specific signal
     virtual void expanded() {}
@@ -44,6 +45,8 @@ public:
     // the mouse enters in the item
     virtual void entered() {}
     virtual void pressed() {}
+    // context menu requested
+    virtual void customContextMenu(const QPoint & /*pos*/) {}
 
 protected:
     ATreeItem *_parent;
@@ -52,27 +55,26 @@ protected:
 
 /**
 * \brief The internal representation of a model item.
-* The model contains a list of TreeItem and performs actions on them (add/remove).
+* The model contains a list of TreeItem and performs actions on them
+* (add/remove).
 * To add a new element in a TreeViewModel, you have to subclass it and
 * implement the methods (columnCount(), data() and setData()) specific for each
 * data structure you want to display.
 * The template T corresponds to the structure that contains the data to display.
-* The subclass manipulates this structure and display/modify the correct 
+* The subclass manipulates this structure and display/modify the correct
 * variable in the structure.
 */
-template<typename T>
-class TreeItem : public ATreeItem
-{
+template <typename T>
+class TreeItem : public ATreeItem {
 public:
-    TreeItem(T *data, ATreeItem *parent = nullptr) 
-        : ATreeItem(parent), _data(data)
-    {
-    }
+    TreeItem(T *data, ATreeItem *parent = nullptr)
+    : ATreeItem(parent), _data(data) {}
 
     virtual ~TreeItem() { delete _data; }
+    T *getData() const { return _data; }
 
 protected:
-    template<typename RealType>
+    template <typename RealType>
     RealType *clone() const {
         T *elem = new T(*_data);
         RealType *item = new RealType(elem, nullptr);
@@ -84,34 +86,42 @@ protected:
     }
 
     T *_data;
+
 private:
     Q_DISABLE_COPY(TreeItem);
 };
 
-class RootItem : public ATreeItem
-{
+class RootItem : public ATreeItem {
 public:
     RootItem(QStringList const &headerData = QStringList());
     virtual ~RootItem() {}
+
     virtual int columnCount() const;
-    virtual QVariant data(int /*column*/, int /*role*/) const { return QVariant(); }
-    virtual bool setData(int /*column*/, const QVariant &/*value*/, int /*role*/) { return false; }
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    virtual QVariant data(int /*column*/, int /*role*/) const {
+        return QVariant();
+    }
+    virtual bool setData(int /*column*/, const QVariant & /*value*/,
+                         int /*role*/) {
+        return false;
+    }
+    virtual QVariant headerData(int section, Qt::Orientation orientation,
+                                int role = Qt::DisplayRole) const;
     virtual RootItem *clone() const;
 
 private:
     const QStringList _headerData;
 };
 
-class TreeItemMimeData : public QMimeData
-{
+class TreeItemMimeData : public QMimeData {
     Q_OBJECT
+
 public:
     TreeItemMimeData();
     virtual ~TreeItemMimeData() {}
     QVector<ATreeItem *> const &getItems() const;
     QStringList formats() const;
     void addItem(ATreeItem *item);
+
 private:
     QVector<ATreeItem *> _items;
     QStringList _format;
@@ -120,42 +130,48 @@ private:
 /**
 * \brief A basic TreeModel suitable for basic data structures.
 * Subclassing it should not be necessary for basic usage.
-* You should subclass it to manage Files/Directories transfert from 
+* You should subclass it to manage Files/Directories transfert from
 * the filesystem to the model. To do that you need to override:
 *    - The mimeType() should specify "text/uri-list" and "text/directory"
 *    - The dropMimeDate() should handle the date if data->hasUrl(),
 * and then call the base method (to keep internal move).
 */
-class TreeViewModel : public QAbstractItemModel
-{
+class TreeViewModel : public QAbstractItemModel {
 public:
-    TreeViewModel(QObject *parent = nullptr) ;
+    TreeViewModel(QObject *parent = nullptr);
     TreeViewModel(QStringList const &headerData, QObject *parent = nullptr);
-    virtual ~TreeViewModel() {}
+    virtual ~TreeViewModel() { delete _root; }
+
     ATreeItem *getRoot() const;
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    virtual QVariant headerData(int section, Qt::Orientation orientation,
+                                int role = Qt::DisplayRole) const override;
     ATreeItem *getItem(const QModelIndex &index) const;
-    template<typename T>
+    template <typename T>
     T *getItem(const QModelIndex &index) const;
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual int
+    columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual int
+    rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual QVariant data(const QModelIndex &index, int role) const override;
     virtual bool setData(const QModelIndex &index, const QVariant &value,
-        int role = Qt::EditRole) override;
-    virtual QModelIndex index(int row, int column,
-        const QModelIndex &parent = QModelIndex()) const override;
+                         int role = Qt::EditRole) override;
+    virtual QModelIndex
+    index(int row, int column,
+          const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex index(int row, int column, const ATreeItem *parent) const;
     virtual QModelIndex parent(const QModelIndex &index) const override;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
-    bool insertItems(const int position, QVector<ATreeItem*> const &items,
-        const QModelIndex &parent = QModelIndex());
+    bool insertItems(const int position, QVector<ATreeItem *> const &items,
+                     const QModelIndex &parent = QModelIndex());
     bool insertItem(const int position, ATreeItem *item,
-        const QModelIndex &parent = QModelIndex());
-    bool appendItems(QVector<ATreeItem *> items, const QModelIndex &parent = QModelIndex());
+                    const QModelIndex &parent = QModelIndex());
+    bool appendItems(QVector<ATreeItem *> items,
+                     const QModelIndex &parent = QModelIndex());
     bool appendItem(ATreeItem *item, const QModelIndex &parent = QModelIndex());
-    bool removeItems(const int position, const int count, 
-        const QModelIndex &parent = QModelIndex());
-    virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex()) override;
+    bool removeItems(const int position, const int count,
+                     const QModelIndex &parent = QModelIndex());
+    virtual bool removeRows(int row, int count,
+                            const QModelIndex &parent = QModelIndex()) override;
     bool removeAll();
     QModelIndex index(const ATreeItem *item) const;
 
@@ -164,20 +180,22 @@ public:
     virtual QMimeData *mimeData(const QModelIndexList &indexes) const override;
     virtual QStringList mimeTypes() const override;
     // performs only internal items drag/drop.
-    virtual bool dropMimeData(const QMimeData *data,
-        Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
+    virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action,
+                              int row, int column,
+                              const QModelIndex &parent) override;
 
 private:
     RootItem *_root;
 };
 
-class TreeView : public QTreeView
-{
+class TreeView : public QTreeView {
 public:
     TreeView(QWidget *parent = nullptr);
     virtual ~TreeView() {}
     void enableDragDrop(const bool st);
-    virtual void setModel(TreeViewModel *model);
+    void keyPressEvent(QKeyEvent *event);
+
+    void setTreeViewModel(TreeViewModel *model);
 };
 
 #endif

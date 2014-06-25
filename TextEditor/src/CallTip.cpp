@@ -18,22 +18,22 @@
 #include "TextEditor/CallTip.h"
 
 CallTipModel::CallTipModel(std::vector<CompletionData> const &data)
-    : QAbstractTableModel(),
-    _data(std::move(data)) {
+: QAbstractTableModel(), _data(std::move(data)) {
 }
 
-int CallTipModel::rowCount(const QModelIndex &/*parent*/) const {
+int CallTipModel::rowCount(const QModelIndex & /*parent*/) const {
     return static_cast<int>(_data.size());
 }
 
-int CallTipModel::columnCount(const QModelIndex &/*parent*/) const {
+int CallTipModel::columnCount(const QModelIndex & /*parent*/) const {
     return 5;
 }
 
-QVariant CallTipModel::headerData(int /*section*/, Qt::Orientation /*orientation*/,
+QVariant CallTipModel::headerData(int /*section*/,
+                                  Qt::Orientation /*orientation*/,
                                   int /*role*/) const {
-                                      // no header visible
-                                      return QVariant();
+    // no header visible
+    return QVariant();
 }
 
 QVariant CallTipModel::data(const QModelIndex &index, int role) const {
@@ -48,48 +48,50 @@ QVariant CallTipModel::data(const QModelIndex &index, int role) const {
         const int row = index.row();
         CompletionData d = _data[row];
         switch (index.column()) {
-        case 0: // type of symbol
-            switch (d.kind) {
-            case CompletionData::Kind::Function:
-                return QVariant("FCT");
-            case CompletionData::Kind::Variable:
-                return QVariant("VAR");
-            case CompletionData::Kind::Unknown:
-                return QVariant("");
-            }
-        case 1: // return type
-            return QVariant(QString::fromStdString(d.ret));
-        case 2: // name symbol
-            return QVariant(QString::fromStdString(d.word));
-        case 3: // params
-            if (d.kind == CompletionData::Kind::Function) {
-                std::ostringstream oss;
-                if (d.parameters.empty() == false) {
-                    std::copy(std::begin(d.parameters), std::end(d.parameters) - 1,
-                        std::ostream_iterator<std::string>(oss, ", "));
-                    oss << d.parameters.back();
+            case 0: // type of symbol
+                switch (d.kind) {
+                    case CompletionData::Kind::Function:
+                        return QVariant("FCT");
+                    case CompletionData::Kind::Variable:
+                        return QVariant("VAR");
+                    case CompletionData::Kind::Unknown:
+                        return QVariant("");
                 }
-                QString s = QString::fromStdString(oss.str());
-                return QVariant(s);
-            }
-            return QVariant();
-        case 4: // opt params
-            if (d.kind == CompletionData::Kind::Function) {
-                std::ostringstream oss;
-                if (d.optionalParameters.empty() == false) {
-                    std::copy(std::begin(d.optionalParameters),
-                        std::end(d.optionalParameters) - 1,
-                        std::ostream_iterator<std::string>(oss, ", "));
-                    oss << d.optionalParameters.back();
+            case 1: // return type
+                return QVariant(QString::fromStdString(d.ret));
+            case 2: // name symbol
+                return QVariant(QString::fromStdString(d.word));
+            case 3: // params
+                if (d.kind == CompletionData::Kind::Function) {
+                    std::ostringstream oss;
+                    if (d.parameters.empty() == false) {
+                        std::copy(
+                            std::begin(d.parameters),
+                            std::end(d.parameters) - 1,
+                            std::ostream_iterator<std::string>(oss, ", "));
+                        oss << d.parameters.back();
+                    }
+                    QString s = QString::fromStdString(oss.str());
+                    return QVariant(s);
                 }
-                QString s = QString::fromStdString(oss.str());
-                return QVariant(s);
-            }
-            return QVariant();
-        default:
-            return QVariant();
+                return QVariant();
+            case 4: // opt params
+                if (d.kind == CompletionData::Kind::Function) {
+                    std::ostringstream oss;
+                    if (d.optionalParameters.empty() == false) {
+                        std::copy(
+                            std::begin(d.optionalParameters),
+                            std::end(d.optionalParameters) - 1,
+                            std::ostream_iterator<std::string>(oss, ", "));
+                        oss << d.optionalParameters.back();
+                    }
+                    QString s = QString::fromStdString(oss.str());
+                    return QVariant(s);
+                }
+                return QVariant();
+            default:
+                return QVariant();
         }
-
     }
     return QVariant();
 }
@@ -101,47 +103,45 @@ void CallTipModel::setFont(QFont const &font) {
 ///////////// CALL TIP ///////////////
 
 CallTip::CallTip(QWidget *parent)
-    : QWidget(parent),
-    _list(new QTableView()),
-    _model(nullptr) {
+: QWidget(parent), _list(new QTableView()), _model(nullptr) {
+    // TEST
+    std::vector<CompletionData> d;
+    d.push_back(CompletionData());
+    d.push_back(CompletionData());
+    d.push_back(CompletionData());
+    d.push_back(CompletionData());
+    setContent(d);
 
-        // TEST
-        std::vector<CompletionData> d;
-        d.push_back(CompletionData());
-        d.push_back(CompletionData());
-        d.push_back(CompletionData());
-        d.push_back(CompletionData());
-        setContent(d);
+    this->setMaximumHeight(100);
+    this->setMinimumHeight(0);
 
-        this->setMaximumHeight(100);
-        this->setMinimumHeight(0);
+    this->setFocusProxy(parent);
+    _list->setFocusProxy(this);
 
-        this->setFocusProxy(parent);
-        _list->setFocusProxy(this);
+    QVBoxLayout *layout = new QVBoxLayout();
+    this->setLayout(layout);
 
-        QVBoxLayout *layout = new QVBoxLayout();
-        this->setLayout(layout);
+    layout->addWidget(_list);
 
-        layout->addWidget(_list);
+    this->hide();
 
-        this->hide();
+    setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
-        setContentsMargins(0, 0, 0, 0);
-        layout->setContentsMargins(0, 0, 0, 0);
+    _list->verticalHeader()->hide();
+    _list->horizontalHeader()->hide();
+    _list->horizontalHeader()->setMinimumSectionSize(0);
+    _list->setShowGrid(false);
 
-        _list->verticalHeader()->hide();
-        _list->horizontalHeader()->hide();
-        _list->horizontalHeader()->setMinimumSectionSize(0);
-        _list->setShowGrid(false);
+    _list->verticalScrollBar()->setMaximumWidth(20);
+    _list->horizontalScrollBar()->setMaximumHeight(20);
 
-        _list->verticalScrollBar()->setMaximumWidth(20);
-        _list->horizontalScrollBar()->setMaximumHeight(20);
+    _list->setSelectionBehavior(
+        QAbstractItemView::SelectionBehavior::SelectRows);
+    _list->setTabKeyNavigation(true);
 
-        _list->setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectRows);
-        _list->setTabKeyNavigation(true);
-
-        //_list->horizontalHeader()->setStretchLastSection(true);
-        //_list->verticalHeader()->setStretchLastSection(true);
+    //_list->horizontalHeader()->setStretchLastSection(true);
+    //_list->verticalHeader()->setStretchLastSection(true);
 }
 
 void CallTip::setContent(std::vector<CompletionData> const &content) {
@@ -154,7 +154,8 @@ void CallTip::setContent(std::vector<CompletionData> const &content) {
 
     _list->resizeColumnsToContents();
     //_list->resizeRowsToContents();
-    _list->verticalHeader()->setDefaultSectionSize(_list->verticalHeader()->minimumSectionSize());
+    _list->verticalHeader()->setDefaultSectionSize(
+        _list->verticalHeader()->minimumSectionSize());
 
     int widthToSet = _list->horizontalHeader()->length();
     int heightToSet = _list->verticalHeader()->length();
@@ -182,8 +183,7 @@ bool CallTip::moveCurrentIndex(const int inc) {
     QModelIndex nextIdx;
     if (idx.isValid() == false) {
         nextIdx = _model->index(0, 0);
-    }
-    else {
+    } else {
         nextIdx = _model->index(idx.row() + inc, idx.column());
     }
     if (nextIdx.isValid()) {
@@ -193,32 +193,31 @@ bool CallTip::moveCurrentIndex(const int inc) {
     return false;
 }
 
-
 void CallTip::sendEvents(QKeyEvent *ev) {
     ev->ignore();
     const int key = ev->key();
     qDebug() << "send event key=" << key;
     switch (key) {
-    case Qt::Key_Up:
-        moveCurrentIndex(-1);
-        ev->accept();
-        break;
-    case Qt::Key_Down:
-        moveCurrentIndex(1);
-        ev->accept();
-        break;
-    case Qt::Key_Enter:
-    case Qt::Key_Return: {
-        qDebug() << "enter ou return calltip";
-        const QModelIndex idx = _list->currentIndex();
-        if (idx.isValid()) {
-            emit entryChosen(idx.data().toString());
+        case Qt::Key_Up:
+            moveCurrentIndex(-1);
             ev->accept();
+            break;
+        case Qt::Key_Down:
+            moveCurrentIndex(1);
+            ev->accept();
+            break;
+        case Qt::Key_Enter:
+        case Qt::Key_Return: {
+            qDebug() << "enter ou return calltip";
+            const QModelIndex idx = _list->currentIndex();
+            if (idx.isValid()) {
+                emit entryChosen(idx.data().toString());
+                ev->accept();
+            }
+            hideComplete();
+            break;
         }
-        hideComplete();
-        break;
-                         }
-    default:
-        break;
+        default:
+            break;
     }
 }

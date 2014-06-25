@@ -1,29 +1,29 @@
-
+#include <QKeyEvent>
 #include "TreeViewModel.h"
 
 /*****************************************************************************/
 /* ATreeItem                                                                 */
 /*****************************************************************************/
 
-ATreeItem::ATreeItem(ATreeItem *parent)
-    : _parent(parent), _children()
-{
+ATreeItem::ATreeItem(ATreeItem *parent) : _parent(parent), _children() {
 }
 
-ATreeItem::~ATreeItem()
-{
+ATreeItem::~ATreeItem() {
     qDeleteAll(_children);
 }
 
 ATreeItem *ATreeItem::getChild(const int row) const {
-    return (row < _children.size()) ? _children.at(row) : nullptr;
+    if (row >= 0 && row < _children.size()) {
+        return _children.at(row);
+    }
+    return nullptr;
 }
 
-ATreeItem *ATreeItem::getParent() const { 
+ATreeItem *ATreeItem::getParent() const {
     return _parent;
 }
 
-void ATreeItem::setParent(ATreeItem *parent) { 
+void ATreeItem::setParent(ATreeItem *parent) {
     _parent = parent;
 }
 
@@ -33,7 +33,7 @@ int ATreeItem::getChildrenNumber() const {
 
 int ATreeItem::getChildIndex() const {
     if (_parent) {
-        return _parent->_children.indexOf(const_cast<ATreeItem*>(this));
+        return _parent->_children.indexOf(const_cast<ATreeItem *>(this));
     }
     return 0;
 }
@@ -56,14 +56,20 @@ bool ATreeItem::removeChildren(const int position, const int count) {
         return false;
     }
     for (int i = 0; i < count; ++i) {
-        delete _children.takeAt(position);
+        ATreeItem *item = _children.takeAt(position);
+        delete item;
+        item = nullptr;
     }
     return true;
 }
 
 Qt::ItemFlags ATreeItem::flags(const int /*column*/) const {
-    return Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
-        Qt::ItemIsDropEnabled | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+bool ATreeItem::setData(int /*column*/, const QVariant & /*value*/,
+                        int /*role*/) {
+    return false;
 }
 
 /*****************************************************************************/
@@ -71,40 +77,37 @@ Qt::ItemFlags ATreeItem::flags(const int /*column*/) const {
 /*****************************************************************************/
 
 RootItem::RootItem(QStringList const &headerData)
-    : ATreeItem(nullptr), _headerData(headerData)
-{
+: ATreeItem(nullptr), _headerData(headerData) {
 }
 
-int RootItem::columnCount() const { 
-    return _headerData.length(); 
+int RootItem::columnCount() const {
+    return _headerData.length();
 }
 
-QVariant RootItem::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant RootItem::headerData(int section, Qt::Orientation /*orientation*/,
+                              int role) const {
     if (role == Qt::DisplayRole) {
         return _headerData.at(section);
     }
     return QVariant();
 }
 
-RootItem *RootItem::clone() const { 
-    return new RootItem(_headerData); 
+RootItem *RootItem::clone() const {
+    return new RootItem(_headerData);
 }
 
 /*****************************************************************************/
 /* TreeItemMimeData                                                          */
 /*****************************************************************************/
-TreeItemMimeData::TreeItemMimeData()
-    : _items(), _format("treeItem")
-{
+TreeItemMimeData::TreeItemMimeData() : _items(), _format("treeItem") {
 }
 
-QVector<ATreeItem *> const &TreeItemMimeData::getItems() const 
-{
-    return _items; 
+QVector<ATreeItem *> const &TreeItemMimeData::getItems() const {
+    return _items;
 }
 
-QStringList TreeItemMimeData::formats() const { 
-    return _format; 
+QStringList TreeItemMimeData::formats() const {
+    return _format;
 }
 
 void TreeItemMimeData::addItem(ATreeItem *item) {
@@ -115,32 +118,31 @@ void TreeItemMimeData::addItem(ATreeItem *item) {
 /* TreeViewModel                                                             */
 /*****************************************************************************/
 
-TreeViewModel::TreeViewModel(QObject *parent) 
-    : QAbstractItemModel(parent), _root(new RootItem()) {
+TreeViewModel::TreeViewModel(QObject *parent)
+: QAbstractItemModel(parent), _root(new RootItem()) {
 }
 
-TreeViewModel::TreeViewModel(QStringList const &headerData, QObject *parent) 
-    : QAbstractItemModel(parent), _root(new RootItem(headerData)) {
+TreeViewModel::TreeViewModel(QStringList const &headerData, QObject *parent)
+: QAbstractItemModel(parent), _root(new RootItem(headerData)) {
 }
 
-ATreeItem *TreeViewModel::getRoot() const { 
+ATreeItem *TreeViewModel::getRoot() const {
     return _root;
 }
 
-QVariant TreeViewModel::headerData(int section, Qt::Orientation orientation, int role) const {
+QVariant TreeViewModel::headerData(int section, Qt::Orientation orientation,
+                                   int role) const {
     return _root->headerData(section, orientation, role);
 }
 
-ATreeItem *TreeViewModel::getItem(const QModelIndex &index) const
-{
+ATreeItem *TreeViewModel::getItem(const QModelIndex &index) const {
     return getItem<ATreeItem>(index);
 }
 
-template<typename T>
-T *TreeViewModel::getItem(const QModelIndex &index) const
-{
+template <typename T>
+T *TreeViewModel::getItem(const QModelIndex &index) const {
     if (index.isValid()) {
-        auto *item = static_cast<T*>(index.internalPointer());
+        auto *item = static_cast<T *>(index.internalPointer());
         if (item) {
             return item;
         }
@@ -148,7 +150,7 @@ T *TreeViewModel::getItem(const QModelIndex &index) const
     return _root;
 }
 
-int TreeViewModel::columnCount(const QModelIndex &parent) const {
+int TreeViewModel::columnCount(const QModelIndex & /*parent*/) const {
     return _root->columnCount();
 }
 
@@ -166,8 +168,7 @@ QVariant TreeViewModel::data(const QModelIndex &index, int role) const {
 }
 
 bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value,
-                            int role)
-{
+                            int role) {
     if (index.isValid()) {
         auto *item = getItem(index);
         const bool result = item->setData(index.column(), value, role);
@@ -180,8 +181,7 @@ bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value,
 }
 
 QModelIndex TreeViewModel::index(int row, int column,
-                                 const QModelIndex &parent) const
-{
+                                 const QModelIndex &parent) const {
     if (parent.isValid() && parent.column() != 0) {
         return QModelIndex();
     }
@@ -189,8 +189,8 @@ QModelIndex TreeViewModel::index(int row, int column,
     return index(row, column, parentItem);
 }
 
-QModelIndex TreeViewModel::index(int row, int column, const ATreeItem *parent) const
-{
+QModelIndex TreeViewModel::index(int row, int column,
+                                 const ATreeItem *parent) const {
     auto childItem = parent->getChild(row);
     if (childItem) {
         return createIndex(row, column, childItem);
@@ -198,8 +198,7 @@ QModelIndex TreeViewModel::index(int row, int column, const ATreeItem *parent) c
     return QModelIndex();
 }
 
-QModelIndex TreeViewModel::parent(const QModelIndex &index) const
-{
+QModelIndex TreeViewModel::parent(const QModelIndex &index) const {
     if (!index.isValid()) {
         return QModelIndex();
     }
@@ -219,9 +218,9 @@ Qt::ItemFlags TreeViewModel::flags(const QModelIndex &index) const {
     return item->flags(index.column());
 }
 
-bool TreeViewModel::insertItems(const int position, QVector<ATreeItem*> const &items,
-                                const QModelIndex &parent)
-{
+bool TreeViewModel::insertItems(const int position,
+                                QVector<ATreeItem *> const &items,
+                                const QModelIndex &parent) {
     Q_ASSERT(position >= 0);
     ATreeItem *parentItem = getItem(parent);
     beginInsertRows(parent, position, position + items.size() - 1);
@@ -237,10 +236,14 @@ bool TreeViewModel::insertItems(const int position, QVector<ATreeItem*> const &i
 
 bool TreeViewModel::insertItem(const int position, ATreeItem *item,
                                const QModelIndex &parent) {
-                                   return insertItems(position, QVector<ATreeItem*>() << item, parent);
+    return insertItems(position, QVector<ATreeItem *>() << item, parent);
 }
 
-bool TreeViewModel::appendItems(QVector<ATreeItem *> items, const QModelIndex &parent) {
+bool TreeViewModel::appendItems(QVector<ATreeItem *> items,
+                                const QModelIndex &parent) {
+    if (items.empty()) {
+        return false;
+    }
     const ATreeItem *parentItem = getItem(parent);
     const int nbChildren = parentItem->getChildrenNumber();
     return insertItems(nbChildren, items, parent);
@@ -252,22 +255,25 @@ bool TreeViewModel::appendItem(ATreeItem *item, const QModelIndex &parent) {
     return insertItem(nbChildren, item, parent);
 }
 
-bool TreeViewModel::removeItems(const int position, const int count, 
+bool TreeViewModel::removeItems(const int position, const int count,
                                 const QModelIndex &parent) {
-                                    auto *parentItem = getItem(parent);
-                                    beginRemoveRows(parent, position, position + count - 1);
-                                    const bool success = parentItem->removeChildren(position, count);
-                                    endRemoveRows();
-                                    return success;
+    auto *parentItem = getItem(parent);
+    beginRemoveRows(parent, position, position + count - 1);
+    const bool success = parentItem->removeChildren(position, count);
+    endRemoveRows();
+    return success;
 }
 
-bool TreeViewModel::removeRows(int row, int count, const QModelIndex & parent)
-{
+bool TreeViewModel::removeRows(int row, int count, const QModelIndex &parent) {
     return removeItems(row, count, parent);
 }
 
 bool TreeViewModel::removeAll() {
-    return removeItems(0, _root->getChildrenNumber());
+    const int nb = _root->getChildrenNumber();
+    if (nb > 0) {
+        return removeItems(0, nb);
+    }
+    return false;
 }
 
 QModelIndex TreeViewModel::index(const ATreeItem *item) const {
@@ -288,13 +294,11 @@ QModelIndex TreeViewModel::index(const ATreeItem *item) const {
     return QModelIndex();
 }
 
-Qt::DropActions TreeViewModel::supportedDropActions() const
-{
+Qt::DropActions TreeViewModel::supportedDropActions() const {
     return Qt::MoveAction | Qt::CopyAction;
 }
 
-QMimeData *TreeViewModel::mimeData(const QModelIndexList &indexes) const
-{
+QMimeData *TreeViewModel::mimeData(const QModelIndexList &indexes) const {
     TreeItemMimeData *mimeData = new TreeItemMimeData();
     QVector<ATreeItem *> items;
     for (const QModelIndex &idx : indexes) {
@@ -309,27 +313,24 @@ QMimeData *TreeViewModel::mimeData(const QModelIndexList &indexes) const
     return mimeData;
 }
 
-QStringList TreeViewModel::mimeTypes() const
-{
+QStringList TreeViewModel::mimeTypes() const {
     return QAbstractItemModel::mimeTypes() << "treeItem";
 }
 
-bool TreeViewModel::dropMimeData(const QMimeData *data,
-                                 Qt::DropAction action, int row, int column, 
-                                 const QModelIndex &parent)
-{
+bool TreeViewModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                 int row, int /*column*/,
+                                 const QModelIndex &parent) {
     if (action == Qt::IgnoreAction)
         return true;
-    const TreeItemMimeData *mimeData = qobject_cast<const TreeItemMimeData *>(data);
+    const TreeItemMimeData *mimeData =
+        qobject_cast<const TreeItemMimeData *>(data);
     if (mimeData) {
         QVector<ATreeItem *> items = mimeData->getItems();
         if (row != -1) {
             return insertItems(row, items, parent);
-        }
-        else if (parent.isValid()) {
+        } else if (parent.isValid()) {
             return appendItems(items, parent);
-        }
-        else {
+        } else {
             return insertItems(rowCount(QModelIndex()), items);
         }
     }
@@ -340,56 +341,81 @@ bool TreeViewModel::dropMimeData(const QMimeData *data,
 /* TreeView                                                                  */
 /*****************************************************************************/
 
-TreeView::TreeView(QWidget *parent) 
-    : QTreeView(parent)
-{
+TreeView::TreeView(QWidget *parent) : QTreeView(parent) {
     setDefaultDropAction(Qt::MoveAction);
 }
 
-void TreeView::enableDragDrop(const bool st)
-{
+void TreeView::enableDragDrop(const bool st) {
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setDragEnabled(st);
     setAcceptDrops(st);
     setDropIndicatorShown(st);
 }
 
-void TreeView::setModel(TreeViewModel *model) 
-{
+void TreeView::keyPressEvent(QKeyEvent *event) {
+    QTreeView::keyPressEvent(event);
+    if ((event->key() == Qt::Key_Up) || (event->key() == Qt::Key_Down)) {
+        emit clicked(currentIndex());
+    }
+}
+
+void TreeView::setTreeViewModel(TreeViewModel *model) {
     QTreeView::setModel(model);
     QObject::connect(this, &QTreeView::expanded, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->expanded(); }
+                     [&model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->expanded();
+        }
     });
     QObject::connect(this, &QTreeView::collapsed, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->collapsed(); }
+                     [&model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->collapsed();
+        }
     });
     QObject::connect(this, &QTreeView::activated, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->activated(); }
+                     [&model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->activated();
+        }
     });
     QObject::connect(this, &QTreeView::clicked, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->clicked(); }
+                     [this, &model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->clicked();
+        }
     });
     QObject::connect(this, &QTreeView::doubleClicked, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->doubleClicked(); }
+                     [&model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->doubleClicked();
+        }
     });
     QObject::connect(this, &QTreeView::entered, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->entered(); }
+                     [&model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->entered();
+        }
     });
     QObject::connect(this, &QTreeView::pressed, this,
-        [&model] (const QModelIndex &index) {
-            auto item = model->getItem(index);
-            if (item) { item->pressed(); }
+                     [&model](const QModelIndex &index) {
+        auto item = model->getItem(index);
+        if (item) {
+            item->pressed();
+        }
+    });
+    QObject::connect(this, &QTreeView::customContextMenuRequested, this,
+                     [this, &model](const QPoint &pos) {
+        const QModelIndex index = this->indexAt(pos);
+        auto item = model->getItem(index);
+        if (item) {
+            item->customContextMenu(pos);
+        }
     });
 }

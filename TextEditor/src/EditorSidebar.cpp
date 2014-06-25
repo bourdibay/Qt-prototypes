@@ -14,34 +14,29 @@
 #include "TextEditor/TextEditor.h"
 
 EditorSidebar::EditorSidebar(TextEditor *editor, QWidget *parent)
-    : QWidget(parent),
-    _editor(editor),
-    _currentSizeHint(0, 0),
-    _verticalScroll(0),
-    _marginColor(QColor(210, 210, 210))
-{
+: QWidget(parent)
+, _editor(editor)
+, _currentSizeHint(0, 0)
+, _verticalScroll(0)
+, _marginColor(QColor(210, 210, 210)) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    QObject::connect(_editor->verticalScrollBar(), SIGNAL(valueChanged(int)), 
-        this, SLOT(scroll(int)));
-    QObject::connect(_editor, SIGNAL(cursorPositionChanged()),
-        this, SLOT(update()));
-    QObject::connect(_editor, SIGNAL(textChanged()),
-        this, SLOT(update()));
+    QObject::connect(_editor->verticalScrollBar(), SIGNAL(valueChanged(int)),
+                     this, SLOT(scroll(int)));
+    QObject::connect(_editor, SIGNAL(cursorPositionChanged()), this,
+                     SLOT(update()));
+    QObject::connect(_editor, SIGNAL(textChanged()), this, SLOT(update()));
 }
 
-void EditorSidebar::scroll(const int dy)
-{
+void EditorSidebar::scroll(const int dy) {
     _verticalScroll = dy;
     update();
 }
 
-QSize EditorSidebar::sizeHint() const
-{
+QSize EditorSidebar::sizeHint() const {
     return QSize(idealWidth(), 0);
 }
 
-void EditorSidebar::paintEvent(QPaintEvent *ev)
-{
+void EditorSidebar::paintEvent(QPaintEvent *ev) {
     const QSize newSizeHint = sizeHint();
     if (_currentSizeHint != newSizeHint) {
         updateGeometry();
@@ -49,24 +44,26 @@ void EditorSidebar::paintEvent(QPaintEvent *ev)
     }
 }
 
-int EditorSidebar::posToLineNumber(const int y)
-{
+int EditorSidebar::posToLineNumber(const int y) {
     QTextBlock block = _editor->firstVisibleBlock();
-    int top = static_cast<int>(_editor->blockBoundingGeometry(block).translated(_editor->contentOffset()).top());
-    int bottom = top + static_cast<int>(_editor->blockBoundingRect(block).height());
+    int top = static_cast<int>(_editor->blockBoundingGeometry(block)
+                                   .translated(_editor->contentOffset())
+                                   .top());
+    int bottom =
+        top + static_cast<int>(_editor->blockBoundingRect(block).height());
     while (block.isValid() && block.isVisible()) {
         if (y >= top && y <= bottom) {
             return block.blockNumber();
         }
         block = block.next();
         top = bottom;
-        bottom = top + static_cast<int>(_editor->blockBoundingRect(block).height());
+        bottom =
+            top + static_cast<int>(_editor->blockBoundingRect(block).height());
     }
     // not found
     return -1;
 }
 
-void EditorSidebar::setMarginColor(QColor const &color)
-{
+void EditorSidebar::setMarginColor(QColor const &color) {
     _marginColor = color;
 }

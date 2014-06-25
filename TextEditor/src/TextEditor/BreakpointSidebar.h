@@ -12,16 +12,15 @@ class QWidget;
 class QPaintEvent;
 class QMouseEvent;
 
-class BreakpointSidebar : public EditorSidebar
-{
+class BreakpointSidebar : public EditorSidebar {
     Q_OBJECT
 
 public:
     BreakpointSidebar(TextEditor *editor, QWidget *parent = nullptr);
     virtual ~BreakpointSidebar() {}
 
-    protected slots:
-        void breakpointChanged(const int line);
+protected slots:
+    void breakpointChanged(const int line);
 
 protected:
     virtual void paintEvent(QPaintEvent *ev);
@@ -31,7 +30,6 @@ protected:
 protected:
     const int _borderSize;
     QRect _breakpoint;
-
 };
 
 #endif

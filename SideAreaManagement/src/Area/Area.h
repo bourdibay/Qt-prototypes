@@ -8,14 +8,9 @@
 
 #include "Area/SideArea.h"
 
-class Area : public QWidget
-{
+class Area : public QWidget {
 public:
-    enum SidePosition {
-        LEFT_SIDE,
-        RIGHT_SIDE,
-        BOTTOM_SIDE
-    };
+    enum SidePosition { LEFT_SIDE, RIGHT_SIDE, BOTTOM_SIDE };
 
     explicit Area(QWidget *areaWidget, QWidget *parent = nullptr);
     virtual ~Area() {}
@@ -31,7 +26,6 @@ private:
     QSplitter *_splitterVertical;
     QSplitter *_splitterHorizontal;
     QWidget *_containerMidHori;
-
 };
 
 #endif

@@ -14,13 +14,10 @@
 #include "../TextEditor/WdScintilla.h"
 #include "TestScintilla.h"
 
-class WindowTest : public QMainWindow
-{
+class WindowTest : public QMainWindow {
     Q_OBJECT
 public:
-    WindowTest() 
-        : QMainWindow() 
-    {
+    WindowTest() : QMainWindow() {
         QWidget *cont = new QWidget();
         QHBoxLayout *layout = new QHBoxLayout();
         cont->setLayout(layout);
@@ -41,7 +38,8 @@ public:
 
         connect(add, SIGNAL(clicked()), this, SLOT(addClicked()));
 
-        QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+Space"), this, SLOT(showAutoComplete()));
+        QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+Space"), this,
+                                            SLOT(showAutoComplete()));
 
         // enable tests in the menu bar
         TestScintilla *scintilla = new TestScintilla(this, editor);
@@ -50,17 +48,15 @@ public:
     WdScintilla *editor;
     QPushButton *add;
 
-    public slots:
-        void showAutoComplete() {
-            editor->showCalltipCurrentPosition();
-        }
+public slots:
+    void showAutoComplete() { editor->showCalltipCurrentPosition(); }
 
-        void addClicked() {
-            QString file = QFileDialog::getOpenFileName();
-            if (file.isEmpty() == false) {
-                editor->openFile(file);
-            }
+    void addClicked() {
+        QString file = QFileDialog::getOpenFileName();
+        if (file.isEmpty() == false) {
+            editor->openFile(file);
         }
+    }
 };
 
 #endif

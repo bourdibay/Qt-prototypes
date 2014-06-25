@@ -7,16 +7,12 @@
 #include <QIcon>
 #include <QString>
 
-class SideAreaComponent : public QWidget
-{
+class SideAreaComponent : public QWidget {
 public:
-    SideAreaComponent(QString const &key,
-        QString const &name,
-        QWidget *parent = nullptr);
-    SideAreaComponent(QString const &key,
-        QString const &name,
-        QIcon const &icon,
-        QWidget *parent = nullptr);
+    SideAreaComponent(QString const &key, QString const &name,
+                      QWidget *parent = nullptr);
+    SideAreaComponent(QString const &key, QString const &name,
+                      QIcon const &icon, QWidget *parent = nullptr);
     SideAreaComponent(SideAreaComponent const &copy);
 
     virtual ~SideAreaComponent() {}
@@ -34,7 +30,6 @@ private:
     const QIcon _icon;
 
     SideAreaComponent &operator=(SideAreaComponent const &copy);
-
 };
 
 #endif

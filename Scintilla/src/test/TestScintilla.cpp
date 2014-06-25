@@ -34,198 +34,249 @@
 static int NB_COMPONENT_NAME = 2;
 
 TestScintilla::TestScintilla(QMainWindow *window, WdScintilla *scintilla)
-    : _window(window), _scintilla(scintilla)
-{
+: _window(window), _scintilla(scintilla) {
     WdMenuBar *menuBar = new WdMenuBar(_window);
 
     menuBar->addWdMenu("DEV_TEST", tr("Tests of scintilla"));
 
     ///////// TEST SCINTILLA /////////
-    menuBar->addWdMenu("TEST_SCINTILLA",
-        QStringList() << "DEV_TEST",
-        tr("scintilla"));
-    menuBar->addWdMenu("APPEND_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Append text"));
-    menuBar->addWdMenu("ADD_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Add text"));
-    menuBar->addWdMenu("DELETE_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Delete text"));
-    menuBar->addWdMenu("COPY_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Copy text"));
-    menuBar->addWdMenu("MOVE_CARET_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Move caret"));
-    menuBar->addWdMenu("MARKERS_MARGINS_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Margins/markers"));
-    menuBar->addWdMenu("STYLE_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Style"));
-    menuBar->addWdMenu("FOLDING_SCINTILLA",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Folding"));
+    menuBar->addWdMenu("TEST_SCINTILLA", QStringList() << "DEV_TEST",
+                       tr("scintilla"));
+    menuBar->addWdMenu("APPEND_SCINTILLA", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA",
+                       tr("Append text"));
+    menuBar->addWdMenu("ADD_SCINTILLA", QStringList() << "DEV_TEST"
+                                                      << "TEST_SCINTILLA",
+                       tr("Add text"));
+    menuBar->addWdMenu("DELETE_SCINTILLA", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA",
+                       tr("Delete text"));
+    menuBar->addWdMenu("COPY_SCINTILLA", QStringList() << "DEV_TEST"
+                                                       << "TEST_SCINTILLA",
+                       tr("Copy text"));
+    menuBar->addWdMenu("MOVE_CARET_SCINTILLA", QStringList()
+                                                   << "DEV_TEST"
+                                                   << "TEST_SCINTILLA",
+                       tr("Move caret"));
+    menuBar->addWdMenu("MARKERS_MARGINS_SCINTILLA", QStringList()
+                                                        << "DEV_TEST"
+                                                        << "TEST_SCINTILLA",
+                       tr("Margins/markers"));
+    menuBar->addWdMenu("STYLE_SCINTILLA", QStringList() << "DEV_TEST"
+                                                        << "TEST_SCINTILLA",
+                       tr("Style"));
+    menuBar->addWdMenu("FOLDING_SCINTILLA", QStringList() << "DEV_TEST"
+                                                          << "TEST_SCINTILLA",
+                       tr("Folding"));
 
     // Move caret
     menuBar->addWdAction("TEST_SCINTILLA_MOVE_CARET_LEFT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MOVE_CARET_SCINTILLA",
-        tr("Move the caret to one char on the left."),
-        this, SLOT(moveCaretLeftFirstSplit()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "MOVE_CARET_SCINTILLA",
+                         tr("Move the caret to one char on the left."), this,
+                         SLOT(moveCaretLeftFirstSplit()));
     menuBar->addWdAction("TEST_SCINTILLA_MOVE_CARET_LEFT_EXTEND",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MOVE_CARET_SCINTILLA",
-        tr("Move the caret to one char on the left extend."),
-        this, SLOT(moveCaretLeftExtendFirstSplit()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "MOVE_CARET_SCINTILLA",
+                         tr("Move the caret to one char on the left extend."),
+                         this, SLOT(moveCaretLeftExtendFirstSplit()));
     menuBar->addWdAction("TEST_SCINTILLA_MOVE_CARET_RIGHT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MOVE_CARET_SCINTILLA",
-        tr("Move the caret to one char on the right."),
-        this, SLOT(moveCaretRightFirstSplit()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "MOVE_CARET_SCINTILLA",
+                         tr("Move the caret to one char on the right."), this,
+                         SLOT(moveCaretRightFirstSplit()));
     menuBar->addWdAction("TEST_SCINTILLA_MOVE_CARET_RIGHT_EXTEND_FIRST_SPLIT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MOVE_CARET_SCINTILLA",
-        tr("Move the caret to one char on the right extend."),
-        this, SLOT(moveCaretRightExtendFirstSplit()));
-    menuBar->addWdAction("TEST_SCINTILLA_GOTO_LINE",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MOVE_CARET_SCINTILLA",
-        tr("Goto line in the current document."),
-        this, SLOT(gotoLine()));
-    menuBar->addWdAction("TEST_SCINTILLA_GOTO_POS",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MOVE_CARET_SCINTILLA",
-        tr("Goto position in the current document."),
-        this, SLOT(gotoPos()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "MOVE_CARET_SCINTILLA",
+                         tr("Move the caret to one char on the right extend."),
+                         this, SLOT(moveCaretRightExtendFirstSplit()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_GOTO_LINE", QStringList() << "DEV_TEST"
+                                                  << "TEST_SCINTILLA"
+                                                  << "MOVE_CARET_SCINTILLA",
+        tr("Goto line in the current document."), this, SLOT(gotoLine()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_GOTO_POS", QStringList() << "DEV_TEST"
+                                                 << "TEST_SCINTILLA"
+                                                 << "MOVE_CARET_SCINTILLA",
+        tr("Goto position in the current document."), this, SLOT(gotoPos()));
 
     // Delete text
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_SELECTION",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete the text selected."),
-        this, SLOT(deleteSelection()));
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_ALL",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete all the text."),
-        this, SLOT(deleteAll()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_DELETE_SELECTION", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA"
+                                                         << "DELETE_SCINTILLA",
+        tr("Delete the text selected."), this, SLOT(deleteSelection()));
+    menuBar->addWdAction("TEST_SCINTILLA_DELETE_ALL", QStringList()
+                                                          << "DEV_TEST"
+                                                          << "TEST_SCINTILLA"
+                                                          << "DELETE_SCINTILLA",
+                         tr("Delete all the text."), this, SLOT(deleteAll()));
     menuBar->addWdAction("TEST_SCINTILLA_DELETE_BACK",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete back."),
-        this, SLOT(deleteBack()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "DELETE_SCINTILLA",
+                         tr("Delete back."), this, SLOT(deleteBack()));
     menuBar->addWdAction("TEST_SCINTILLA_DELETE_BACK_NOLINE",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete back on the line."),
-        this, SLOT(deleteBackNoLine()));
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_LINE_LEFT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete all the left of the line."),
-        this, SLOT(deleteLineLeft()));
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_LINE_RIGHT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete all the right of the line."),
-        this, SLOT(deleteLineRight()));
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_WORD_LEFT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete the left word."),
-        this, SLOT(deleteLeftWord()));
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_WORD_RIGHT",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete the right word."),
-        this, SLOT(deleteRightWord()));
-    menuBar->addWdAction("TEST_SCINTILLA_DELETE_CURR_LINE",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "DELETE_SCINTILLA",
-        tr("Delete the current line."),
-        this, SLOT(deleteCurrentLine()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "DELETE_SCINTILLA",
+                         tr("Delete back on the line."), this,
+                         SLOT(deleteBackNoLine()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_DELETE_LINE_LEFT", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA"
+                                                         << "DELETE_SCINTILLA",
+        tr("Delete all the left of the line."), this, SLOT(deleteLineLeft()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_DELETE_LINE_RIGHT", QStringList() << "DEV_TEST"
+                                                          << "TEST_SCINTILLA"
+                                                          << "DELETE_SCINTILLA",
+        tr("Delete all the right of the line."), this, SLOT(deleteLineRight()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_DELETE_WORD_LEFT", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA"
+                                                         << "DELETE_SCINTILLA",
+        tr("Delete the left word."), this, SLOT(deleteLeftWord()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_DELETE_WORD_RIGHT", QStringList() << "DEV_TEST"
+                                                          << "TEST_SCINTILLA"
+                                                          << "DELETE_SCINTILLA",
+        tr("Delete the right word."), this, SLOT(deleteRightWord()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_DELETE_CURR_LINE", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA"
+                                                         << "DELETE_SCINTILLA",
+        tr("Delete the current line."), this, SLOT(deleteCurrentLine()));
 
     // Append text
-    menuBar->addWdAction("TEST_SCINTILLA_APPEND_TEXT_TEST",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "APPEND_SCINTILLA",
-        tr("Launch the test that append text in the current document."),
-        this, SLOT(appendTextTest()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_APPEND_TEXT_TEST", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA"
+                                                         << "APPEND_SCINTILLA",
+        tr("Launch the test that append text in the current document."), this,
+        SLOT(appendTextTest()));
 
     // Add text
-    menuBar->addWdAction("TEST_SCINTILLA_ADD_TEXT_TEST",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "ADD_SCINTILLA",
-        tr("Launch the test that add text after the cursor in the current document."),
-        this, SLOT(addTextTest()));
+    menuBar->addWdAction("TEST_SCINTILLA_ADD_TEXT_TEST", QStringList()
+                                                             << "DEV_TEST"
+                                                             << "TEST_SCINTILLA"
+                                                             << "ADD_SCINTILLA",
+                         tr("Launch the test that add text after the cursor in "
+                            "the current document."),
+                         this, SLOT(addTextTest()));
 
     // Copy text
     menuBar->addWdAction("TEST_SCINTILLA_COPY_SELECTION",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "COPY_SCINTILLA",
-        tr("Copy the selection in the current document."),
-        this, SLOT(copySelection()));
-    menuBar->addWdAction("TEST_SCINTILLA_COPY_RANGE",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "COPY_SCINTILLA",
-        tr("Copy a range in the current document."),
-        this, SLOT(copyRange()));
-    menuBar->addWdAction("TEST_SCINTILLA_COPY_CLIPBOARD",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "COPY_SCINTILLA",
-        tr("Copy a text to the clipboard in the current document."),
-        this, SLOT(copyToClipboard()));
-    menuBar->addWdAction("TEST_SCINTILLA_PASTE",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "COPY_SCINTILLA",
-        tr("Paste in the current document."),
-        this, SLOT(paste()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "COPY_SCINTILLA",
+                         tr("Copy the selection in the current document."),
+                         this, SLOT(copySelection()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_COPY_RANGE", QStringList() << "DEV_TEST"
+                                                   << "TEST_SCINTILLA"
+                                                   << "COPY_SCINTILLA",
+        tr("Copy a range in the current document."), this, SLOT(copyRange()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_COPY_CLIPBOARD", QStringList() << "DEV_TEST"
+                                                       << "TEST_SCINTILLA"
+                                                       << "COPY_SCINTILLA",
+        tr("Copy a text to the clipboard in the current document."), this,
+        SLOT(copyToClipboard()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_PASTE", QStringList() << "DEV_TEST"
+                                              << "TEST_SCINTILLA"
+                                              << "COPY_SCINTILLA",
+        tr("Paste in the current document."), this, SLOT(paste()));
     menuBar->addWdAction("TEST_SCINTILLA_CUT_SELECTION",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "COPY_SCINTILLA",
-        tr("Cut the selection in the current document."),
-        this, SLOT(cutSelection()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "COPY_SCINTILLA",
+                         tr("Cut the selection in the current document."), this,
+                         SLOT(cutSelection()));
 
     // Margins/markers
-    menuBar->addWdAction("TEST_SCINTILLA_TEST_MARGINS_MARKERS",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "MARKERS_MARGINS_SCINTILLA",
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_TEST_MARGINS_MARKERS",
+        QStringList() << "DEV_TEST"
+                      << "TEST_SCINTILLA"
+                      << "MARKERS_MARGINS_SCINTILLA",
         tr("Launch tests of margins and markers in the current document."),
         this, SLOT(markersTest()));
 
     // Style
-    menuBar->addWdAction("TEST_SCINTILLA_TEST_STYLE_INDIC",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "STYLE_SCINTILLA",
-        tr("Launch test of indicators in the current document."),
-        this, SLOT(indicatorTest()));
-    menuBar->addWdAction("TEST_SCINTILLA_TEST_COLOR",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "STYLE_SCINTILLA",
-        tr("Launch test of colors in the current document."),
-        this, SLOT(colorTest()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_TEST_STYLE_INDIC", QStringList() << "DEV_TEST"
+                                                         << "TEST_SCINTILLA"
+                                                         << "STYLE_SCINTILLA",
+        tr("Launch test of indicators in the current document."), this,
+        SLOT(indicatorTest()));
+    menuBar->addWdAction("TEST_SCINTILLA_TEST_COLOR", QStringList()
+                                                          << "DEV_TEST"
+                                                          << "TEST_SCINTILLA"
+                                                          << "STYLE_SCINTILLA",
+                         tr("Launch test of colors in the current document."),
+                         this, SLOT(colorTest()));
 
     // Folding
     menuBar->addWdAction("TEST_SCINTILLA_TEST_FOLDING",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA" << "FOLDING_SCINTILLA",
-        tr("Launch test of folding in the current document."),
-        this, SLOT(foldTest()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA"
+                                       << "FOLDING_SCINTILLA",
+                         tr("Launch test of folding in the current document."),
+                         this, SLOT(foldTest()));
 
     // OTHER
     menuBar->addWdAction("TEST_SCINTILLA_GET_POSITION_INFO",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Get the positon info in the current document."),
-        this, SLOT(getPositonInfo()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA",
+                         tr("Get the positon info in the current document."),
+                         this, SLOT(getPositonInfo()));
     menuBar->addWdAction("TEST_SCINTILLA_GET_SELECTION_INFO",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Get the selection info in the current document."),
-        this, SLOT(getSelectionInfo()));
-    menuBar->addWdAction("TEST_SCINTILLA_ZOOM",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Zoom the current document."),
-        this, SLOT(zoom()));
-    menuBar->addWdAction("TEST_SCINTILLA_DISPLAY_EOL",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Display end-of-line in the current document."),
-        this, SLOT(displayEOL()));
-    menuBar->addWdAction("TEST_SCINTILLA_CONVERT_EOL",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Convert end-of-line in the current document."),
-        this, SLOT(convertEOL()));
-    menuBar->addWdAction("TEST_SCINTILLA_OVERWRITE_INSERT_MODE",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA",
+                         tr("Get the selection info in the current document."),
+                         this, SLOT(getSelectionInfo()));
+    menuBar->addWdAction("TEST_SCINTILLA_ZOOM", QStringList()
+                                                    << "DEV_TEST"
+                                                    << "TEST_SCINTILLA",
+                         tr("Zoom the current document."), this, SLOT(zoom()));
+    menuBar->addWdAction("TEST_SCINTILLA_DISPLAY_EOL", QStringList()
+                                                           << "DEV_TEST"
+                                                           << "TEST_SCINTILLA",
+                         tr("Display end-of-line in the current document."),
+                         this, SLOT(displayEOL()));
+    menuBar->addWdAction("TEST_SCINTILLA_CONVERT_EOL", QStringList()
+                                                           << "DEV_TEST"
+                                                           << "TEST_SCINTILLA",
+                         tr("Convert end-of-line in the current document."),
+                         this, SLOT(convertEOL()));
+    menuBar->addWdAction(
+        "TEST_SCINTILLA_OVERWRITE_INSERT_MODE", QStringList()
+                                                    << "DEV_TEST"
+                                                    << "TEST_SCINTILLA",
         tr("Switch between insert and overwrite mode in the current document."),
         this, SLOT(switchOverwriteMode()));
     menuBar->addWdAction("TEST_SCINTILLA_GET_LINE_INFO",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Get a line information from the document opened"),
-        this, SLOT(getLineInfo()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA",
+                         tr("Get a line information from the document opened"),
+                         this, SLOT(getLineInfo()));
     menuBar->addWdAction("TEST_SCINTILLA_LOWER_CASE_SELECTION",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Lower the selection from the document opened"),
-        this, SLOT(lowerCaseSelection()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA",
+                         tr("Lower the selection from the document opened"),
+                         this, SLOT(lowerCaseSelection()));
     menuBar->addWdAction("TEST_SCINTILLA_UPPER_CASE_SELECTION",
-        QStringList() << "DEV_TEST" << "TEST_SCINTILLA",
-        tr("Upper the selection from the document opened"),
-        this, SLOT(upperCaseSelection()));
+                         QStringList() << "DEV_TEST"
+                                       << "TEST_SCINTILLA",
+                         tr("Upper the selection from the document opened"),
+                         this, SLOT(upperCaseSelection()));
 
     _window->setMenuBar(menuBar);
 }
@@ -286,11 +337,11 @@ void TestScintilla::deleteCurrentLine() {
     _scintilla->deleteCurrentLine();
 }
 
-
 void TestScintilla::appendTextTest() {
     _scintilla->appendText("\n-----------TEST APPEND TEXT------------\n");
     _scintilla->appendText("Test qstring:");
-    _scintilla->appendText(QString("This is a test from a QString and utf8 characters"));
+    _scintilla->appendText(
+        QString("This is a test from a QString and utf8 characters"));
     _scintilla->appendText("\n");
     _scintilla->appendText("Test qbytearray:");
     _scintilla->appendText(QByteArray("This is a qbytearray"));
@@ -302,17 +353,19 @@ void TestScintilla::appendTextTest() {
     _scintilla->appendText(reinterpret_cast<const char *>("I'm there"), 5);
     _scintilla->appendText("\n");
     _scintilla->appendText("Test char * with special char:");
-    _scintilla->appendText("¡ Puedo escribir español aquí ! ¿ Estoy aquí ? J'écris français.");
+    _scintilla->appendText(
+        "¡ Puedo escribir español aquí ! ¿ Estoy aquí ? J'écris français.");
     _scintilla->appendText("\n");
     _scintilla->appendText("Test char * with special char + length 13:");
-    _scintilla->appendText("¡ Puedo escribir español aquí ! ¿ Estoy aquí ?", 13);
+    _scintilla->appendText("¡ Puedo escribir español aquí ! ¿ Estoy aquí ?",
+                           13);
     _scintilla->appendText("\n");
     _scintilla->appendText("Test std string:");
     _scintilla->appendText(std::string("Jag talar lite svenska nu !"));
     _scintilla->appendText("\n");
     _scintilla->appendText("Test std string with special char:");
-    _scintilla->appendText(
-        std::string("Jag bor i Linköping, och på lunchen brukar jag äta köttbullar :)!"));
+    _scintilla->appendText(std::string(
+        "Jag bor i Linköping, och på lunchen brukar jag äta köttbullar :)!"));
     _scintilla->appendText("\n");
 }
 
@@ -320,7 +373,8 @@ void TestScintilla::addTextTest() {
     _scintilla->addText("\n-----------TEST ADD TEXT------------\n");
     _scintilla->addText("\n");
     _scintilla->addText("Test qstring:");
-    _scintilla->addText(QString("This is a test from a QString and utf8 characters"));
+    _scintilla->addText(
+        QString("This is a test from a QString and utf8 characters"));
     _scintilla->addText("\n");
     _scintilla->addText("Test qbytearray:");
     _scintilla->addText(QByteArray("This is a qbytearray"));
@@ -332,7 +386,8 @@ void TestScintilla::addTextTest() {
     _scintilla->addText(reinterpret_cast<const char *>("I'm there"), 5);
     _scintilla->addText("\n");
     _scintilla->addText("Test char* with special char:");
-    _scintilla->addText("¡ Puedo escribir español aquí ! ¿ Estoy aquí ? J'écris français.");
+    _scintilla->addText(
+        "¡ Puedo escribir español aquí ! ¿ Estoy aquí ? J'écris français.");
     _scintilla->addText("\n");
     _scintilla->addText("Test char* with special char + length 13:");
     _scintilla->addText("¡ Puedo escribir español aquí ! ¿ Estoy aquí ?", 13);
@@ -341,17 +396,18 @@ void TestScintilla::addTextTest() {
     _scintilla->addText(std::string("Jag talar lite svenska nu !"));
     _scintilla->addText("\n");
     _scintilla->addText("Test std string with special char:");
-    _scintilla->addText(
-        std::string("Jag bor i Linköping, och på lunchen brukar jag äta köttbullar :)!"));
+    _scintilla->addText(std::string(
+        "Jag bor i Linköping, och på lunchen brukar jag äta köttbullar :)!"));
     _scintilla->addText("\n");
     _scintilla->addText("Bonus test:");
-    _scintilla->addText("hého à tous, é(accent aiguë)à(a accent grace)ë(e tréma)è(accent grave) je suis ici");
+    _scintilla->addText("hého à tous, é(accent aiguë)à(a accent grace)ë(e "
+                        "tréma)è(accent grave) je suis ici");
     _scintilla->addText("\n");
 }
 
 void TestScintilla::getLineInfo() {
     const int line = QInputDialog::getInt(_window, "Get line number",
-        "Get the line number:");
+                                          "Get the line number:");
     const int length = _scintilla->getLineLength(line);
     const QString str = _scintilla->getLine(line);
     qDebug() << "GetLine: length=" << length << " Content=" << str;
@@ -361,7 +417,8 @@ void TestScintilla::getSelectionInfo() {
     const int begin = _scintilla->getSelectionBegin();
     const int end = _scintilla->getSelectionEnd();
     const QString text = _scintilla->getSelectedText();
-    qDebug() << "Text selected=" << text << " begin=" << begin << " end=" << end;
+    qDebug() << "Text selected=" << text << " begin=" << begin
+             << " end=" << end;
 }
 
 void TestScintilla::getPositonInfo() {
@@ -372,13 +429,11 @@ void TestScintilla::getPositonInfo() {
     const QString text = _scintilla->getText(begin, end);
     const QString currText = _scintilla->getCurrentLine(10);
     const QString currFullText = _scintilla->getCurrentLine(-1);
-    qDebug() << "currpos=" << currPos
-        << "line=" << line << "beginLine=" << begin
-        << "endLine=" << end << "getText between=" << text
-        << "10 first char=" << currText
-        << "full text=" << currFullText;
+    qDebug() << "currpos=" << currPos << "line=" << line
+             << "beginLine=" << begin << "endLine=" << end
+             << "getText between=" << text << "10 first char=" << currText
+             << "full text=" << currFullText;
 }
-
 
 void TestScintilla::copySelection() {
     _scintilla->copySelection();
@@ -387,7 +442,8 @@ void TestScintilla::copySelection() {
 }
 
 void TestScintilla::copyRange() {
-    const int begin = QInputDialog::getInt(_window, "Get begin", "Get begin range:");
+    const int begin =
+        QInputDialog::getInt(_window, "Get begin", "Get begin range:");
     const int end = QInputDialog::getInt(_window, "Get end", "Get end range:");
     _scintilla->copy(begin, end);
     QString text = _scintilla->getTextCopied();
@@ -407,8 +463,8 @@ void TestScintilla::copyToClipboard() {
     _scintilla->copyToClipboard(QString("je suis ici"));
     text = _scintilla->getTextCopied();
     qDebug() << "Text copied=" << text;
-    const char *str =
-        "hého à tous, é(accent aiguë)à(a accent grace)ë(e tréma)è(accent grave) je suis ici";
+    const char *str = "hého à tous, é(accent aiguë)à(a accent grace)ë(e "
+                      "tréma)è(accent grave) je suis ici";
     const size_t len = strlen(str);
     _scintilla->copyToClipboard(len, str);
     text = _scintilla->getTextCopied();
@@ -436,19 +492,19 @@ void TestScintilla::displayEOL() {
 
 void TestScintilla::convertEOL() {
     const int n = QInputDialog::getInt(_window, "convert eol",
-        "1=windows, 2=mac, 3=linux");
+                                       "1=windows, 2=mac, 3=linux");
     switch (n) {
-    case 1:
-        _scintilla->convertEOL(WdScintilla::eEOLType::EOL_WINDOWS);
-        break;
-    case 2:
-        _scintilla->convertEOL(WdScintilla::eEOLType::EOL_MAC);
-        break;
-    case 3:
-        _scintilla->convertEOL(WdScintilla::eEOLType::EOL_LINUX);
-        break;
-    default:
-        qWarning() << "No valid number for EOL conversion...";
+        case 1:
+            _scintilla->convertEOL(WdScintilla::eEOLType::EOL_WINDOWS);
+            break;
+        case 2:
+            _scintilla->convertEOL(WdScintilla::eEOLType::EOL_MAC);
+            break;
+        case 3:
+            _scintilla->convertEOL(WdScintilla::eEOLType::EOL_LINUX);
+            break;
+        default:
+            qWarning() << "No valid number for EOL conversion...";
     }
 }
 
@@ -458,19 +514,20 @@ void TestScintilla::switchOverwriteMode() {
     st = _scintilla->isOverwriteMode();
     if (st) {
         qDebug() << "Overwrite mode enabled";
-    }
-    else {
+    } else {
         qDebug() << "Insert mode enabled";
     }
 }
 
 void TestScintilla::gotoLine() {
-    const int line = QInputDialog::getInt(_window, "Goto line", "go to the line:");
+    const int line =
+        QInputDialog::getInt(_window, "Goto line", "go to the line:");
     _scintilla->gotoLine(line);
 }
 
 void TestScintilla::gotoPos() {
-    const int pos = QInputDialog::getInt(_window, "Goto position", "go to the position:");
+    const int pos =
+        QInputDialog::getInt(_window, "Goto position", "go to the position:");
     _scintilla->gotoPos(pos);
 }
 
@@ -531,7 +588,8 @@ void TestScintilla::markersTest() {
     // line 12 because 11 + 1 displayed
     qDebug() << "Originally, line12=" << totalLine11;
     qDebug() << "Originally, line13=" << totalLine12;
-    qDebug() << "We have deleted some marker, now line number 12 should have only a circle";
+    qDebug() << "We have deleted some marker, now line number 12 should have "
+                "only a circle";
     _scintilla->deleteAllMarkersOnLine(12);
     qDebug() << "All markers should have been deleted on the line 13.";
 }
@@ -540,7 +598,8 @@ void TestScintilla::indicatorTest() {
     _scintilla->defineIndicator(WdScintilla::WdIndicator::SquiggleIndicator, 0);
     _scintilla->defineIndicator(WdScintilla::WdIndicator::RoundBoxIndicator, 1);
     _scintilla->defineIndicator(WdScintilla::WdIndicator::BoxIndicator, 2);
-    _scintilla->defineIndicator(WdScintilla::WdIndicator::ThickCompositionIndicator, 3);
+    _scintilla->defineIndicator(
+        WdScintilla::WdIndicator::ThickCompositionIndicator, 3);
 
     _scintilla->setIndicatorColor(QColor("red"), 0);
     if (_scintilla->getLineLength(1) > 11) {

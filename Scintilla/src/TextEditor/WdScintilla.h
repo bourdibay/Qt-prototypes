@@ -31,7 +31,8 @@ class QColor;
 class QMenu;
 class QContextMenuEvent;
 
-// FIXME: colors of the text put the background in white. Update the background too.
+// FIXME: colors of the text put the background in white. Update the background
+// too.
 
 // The tab/space replacement does not work as expected.
 // To replace a tab by a fixed number of spaces,
@@ -127,28 +128,33 @@ public:
     void addText(std::string const &str) const;
 
     /**
-    * \brief Append a text to the end of the document without changing the selection.
+    * \brief Append a text to the end of the document without changing the
+    * selection.
     * \param text The text to append.
     */
     void appendText(QString const &text) const;
     /**
-    * \brief Append a text to the end of the document without changing the selection.
+    * \brief Append a text to the end of the document without changing the
+    * selection.
     * \param text The text to append.
     */
     void appendText(QByteArray const &text) const;
     /**
-    * \brief Append a text to the end of the document without changing the selection.
+    * \brief Append a text to the end of the document without changing the
+    * selection.
     * \param str The text to append.
     */
     void appendText(char const *str) const;
     /**
-    * \brief Append a text to the end of the document without changing the selection.
+    * \brief Append a text to the end of the document without changing the
+    * selection.
     * \param str The text to append.
     * \param length The length of the text to append.
     */
     void appendText(char const *str, const long length) const;
     /**
-    * \brief Append a text to the end of the document without changing the selection.
+    * \brief Append a text to the end of the document without changing the
+    * selection.
     * \param str The text to append.
     */
     void appendText(std::string const &str) const;
@@ -195,8 +201,8 @@ public:
     * \param lineEnd The line where stopping to copy.
     * \param indexEnd The index on the line where stopping to copy.
     */
-    void copy(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd);
+    void copy(const int lineStart, const int indexStart, const int lineEnd,
+              const int indexEnd);
     /**
     * \brief Copy the text to the clipboard.
     * \param length The length of the text.
@@ -259,7 +265,8 @@ public:
     */
     void moveCaretCharLeft() const;
     /**
-    * \brief Move the caret one character to the left by extending the selection.
+    * \brief Move the caret one character to the left by extending the
+    * selection.
     */
     void moveCaretCharLeftExtend() const;
     /**
@@ -267,7 +274,8 @@ public:
     */
     void moveCaretCharRight() const;
     /**
-    * \brief Move the caret one character to the right by extending the selection.
+    * \brief Move the caret one character to the right by extending the
+    * selection.
     */
     void moveCaretCharRightExtend() const;
     /**
@@ -275,7 +283,8 @@ public:
     */
     void moveCaretToEndDocument() const;
     /**
-    * \brief Move the caret to the end of the document by extending the selection.
+    * \brief Move the caret to the end of the document by extending the
+    * selection.
     */
     void moveCaretToEndDocumentExtend() const;
     /**
@@ -283,7 +292,8 @@ public:
     */
     void moveCaretToStartDocument() const;
     /**
-    * \brief Move the caret to the beginning of the document by extending the selection.
+    * \brief Move the caret to the beginning of the document by extending the
+    * selection.
     */
     void moveCaretToStartDocumentExtend() const;
     /**
@@ -307,7 +317,8 @@ public:
     */
     void moveCaretStartLine() const;
     /**
-    * \brief Move the caret to the beginning of the line by extending the selection.
+    * \brief Move the caret to the beginning of the line by extending the
+    * selection.
     */
     void moveCaretStartLineExtend() const;
     /**
@@ -435,7 +446,7 @@ public:
     * \return The text between both positions.
     */
     QString getText(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd) const;
+                    const int lineEnd, const int indexEnd) const;
     /**
     * \brief Get the position of the beginning of the line.
     * \param line The line number.
@@ -464,7 +475,7 @@ public:
     int getCurrentLineNumber() const;
     int getCurrentIndexNumber() const;
     int getLengthRange(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd) const;
+                       const int lineEnd, const int indexEnd) const;
 
     /**
     * \brief Get the position of the beginning of the selected text.
@@ -610,7 +621,7 @@ public:
     * \param endIndex The index on the last line.
     */
     void selectRange(const int beginLine, const int beginIndex,
-        const int endLine, const int endIndex) const;
+                     const int endLine, const int endIndex) const;
     virtual void unselect() const;
     /**
     * \brief Set the background color of the selected text.
@@ -732,13 +743,15 @@ public:
     * \param col The color.
     * \param nbMarker The number of the marker.
     */
-    void setMarkerBackgroundColor(const QColor &col, const int nbMarker = -1) const;
+    void setMarkerBackgroundColor(const QColor &col,
+                                  const int nbMarker = -1) const;
     /**
     * \brief Set the foreground color of the margin.
     * \param col The color.
     * \param nbMarker The number of the marker.
     */
-    void setMarkerForegroundColor(const QColor &col, const int nbMarker = -1) const;
+    void setMarkerForegroundColor(const QColor &col,
+                                  const int nbMarker = -1) const;
     /**
     * \brief Set the margin mask of markers accepted on the margin.
     * \param margin The margin.
@@ -871,14 +884,16 @@ public:
     * \param mask The mask of the markers we want.
     * \return The list of lines where the markers are.
     */
-    QList<int> getLinesWithMarkers(const int fromLine, const unsigned int mask) const;
+    QList<int> getLinesWithMarkers(const int fromLine,
+                                   const unsigned int mask) const;
     /**
     * \brief Get the lines that contains the marker.
     * \param fromLine The line where starting.
     * \param markers The markers we want.
     * \return The list of lines where the markers are.
     */
-    QList<int> getLinesWithMarkers(const int fromLine, QList<int> const &markers) const;
+    QList<int> getLinesWithMarkers(const int fromLine,
+                                   QList<int> const &markers) const;
     /**
     * \brief Get the lines that contains the marker.
     * \param fromLine The line where starting.
@@ -893,7 +908,8 @@ public:
     * \param mask The mask of the markers we want.
     * \return The list of lines where the markers are.
     */
-    QList<int> getLinesWithMarkers(const int fromLine, const int toLine, const unsigned int mask) const;
+    QList<int> getLinesWithMarkers(const int fromLine, const int toLine,
+                                   const unsigned int mask) const;
     /**
     * \brief Get the lines that contains the marker.
     * \param fromLine The line where starting.
@@ -902,7 +918,7 @@ public:
     * \return The list of lines where the markers are.
     */
     QList<int> getLinesWithMarkers(const int fromLine, const int toLine,
-        QList<int> const &markers) const;
+                                   QList<int> const &markers) const;
     /**
     * \brief Get the lines that contains the marker.
     * \param fromLine The line where starting.
@@ -910,7 +926,8 @@ public:
     * \param marker The marker we want.
     * \return The list of lines where the marker is.
     */
-    QList<int> getLinesWithMarker(const int fromLine, const int toLine, const int marker) const;
+    QList<int> getLinesWithMarker(const int fromLine, const int toLine,
+                                  const int marker) const;
     /**
     * \brief Get the lines that contains the marker.
     * \param mask The mask of the markers we want.
@@ -932,7 +949,8 @@ public:
 
     // styles: colors, font, ...
     /**
-    * \typedef An indicator allows to underline lines for example, for warnings display, etc...
+    * \typedef An indicator allows to underline lines for example, for warnings
+    * display, etc...
     * See http://www.scintilla.org/ScintillaDoc.html#Indicators
     */
     typedef QsciScintilla::IndicatorStyle WdIndicator;
@@ -948,7 +966,7 @@ public:
     * \param style The style to apply.
     */
     void setStyling(const int length, const int style) const;
-    //TODO: range text style (bold, italic, ...)
+    // TODO: range text style (bold, italic, ...)
     /**
     * \brief Set the foreground color for a style.
     * \param numberStyle The number of the style.
@@ -968,7 +986,7 @@ public:
     * \param numberStyle The style to apply.
     */
     void applyStyle(const int pos, const int length,
-        const int numberStyle) const;
+                    const int numberStyle) const;
     /**
     * \brief Apply a style from a position.
     * \param lineStart The first line to start.
@@ -978,8 +996,8 @@ public:
     * \param numberStyle The style to apply.
     */
     void applyStyle(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd,
-        const int numberStyle) const;
+                    const int lineEnd, const int indexEnd,
+                    const int numberStyle) const;
     /**
     * \brief Apply a style from a position.
     * \param lineStart The first line to start.
@@ -987,9 +1005,8 @@ public:
     * \param length The number of characters to stylize.
     * \param numberStyle The style to apply.
     */
-    void applyStyle(const int lineStart, const int indexStart,
-        const int length,
-        const int numberStyle) const;
+    void applyStyle(const int lineStart, const int indexStart, const int length,
+                    const int numberStyle) const;
 
     /**
     * \brief Define an indicator number.
@@ -1007,8 +1024,8 @@ public:
     * \param numberIndicator The indicator to set.
     */
     void setIndicator(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd,
-        const int numberIndicator) const;
+                      const int lineEnd, const int indexEnd,
+                      const int numberIndicator) const;
     /**
     * \brief Clear one or several indicator(s) on a line.
     * \param lineStart The first line to start.
@@ -1018,8 +1035,8 @@ public:
     * \param number The indicator to set (-1 = all by default).
     */
     void clearIndicator(const int lineStart, const int indexStart,
-        const int lineEnd, const int indexEnd,
-        const int number = -1) const;
+                        const int lineEnd, const int indexEnd,
+                        const int number = -1) const;
     /**
     * \brief Set the indicator color.
     * \param color The color.
@@ -1102,7 +1119,8 @@ public:
     */
     void setFoldLevel(const int line, const int level) const;
     /**
-    * \brief Set the fold level of the line with the mask (header and whiteline mask).
+    * \brief Set the fold level of the line with the mask (header and whiteline
+    * mask).
     * \param line The line number.
     * \param level The level to set.
     */
@@ -1143,7 +1161,7 @@ public:
     * \param level The level to set.
     */
     void setFoldPart(const int lineStart, const int lineEnd,
-        const int level) const;
+                     const int level) const;
     /**
     * \brief Fold a block of line with a specific level (with the mask).
     * \param lineStart The first line.
@@ -1151,7 +1169,7 @@ public:
     * \param level The level to set.
     */
     void setFoldPartWithMask(const int lineStart, const int lineEnd,
-        const int level) const;
+                             const int level) const;
     /**
     * \brief Remove the fold block.
     * \param lineStart The first line.
@@ -1230,16 +1248,12 @@ public:
     * \param posixRegexp Is the regexp POSIX ?
     * \return True if we found, False otherwise.
     */
-    bool findFirst(QString const &expr,
-        const bool isRegexp,
-        const bool isCaseSensitive,
-        const bool matchWordOnly,
-        const bool searchWrapsEnd,
-        const bool searchForward = true,
-        const int fromLine = -1,
-        const int fromIndex = -1,
-        const bool unfoldTextFound = true,
-        const bool posixRegexp = false) const;
+    bool findFirst(QString const &expr, const bool isRegexp,
+                   const bool isCaseSensitive, const bool matchWordOnly,
+                   const bool searchWrapsEnd, const bool searchForward = true,
+                   const int fromLine = -1, const int fromIndex = -1,
+                   const bool unfoldTextFound = true,
+                   const bool posixRegexp = false) const;
     /**
     * \brief Find The first element in the selection and move the cursor to the
     * beginning of the matched expression.
@@ -1253,13 +1267,12 @@ public:
     * \param posixRegexp Is the regexp POSIX ?
     * \return True if we found, False otherwise.
     */
-    bool findFirstInSelection(QString const &expr,
-        const bool isRegexp,
-        const bool isCaseSensitive,
-        const bool matchWordOnly,
-        const bool searchForward = true,
-        const bool unfoldTextFound = true,
-        const bool posixRegexp = false) const;
+    bool findFirstInSelection(QString const &expr, const bool isRegexp,
+                              const bool isCaseSensitive,
+                              const bool matchWordOnly,
+                              const bool searchForward = true,
+                              const bool unfoldTextFound = true,
+                              const bool posixRegexp = false) const;
     /**
     * \brief Find the next expression after a call to findFirst()
     * or findFirstInSelection().
@@ -1380,100 +1393,93 @@ public:
     typedef QsciScintilla::WrapIndentMode WdWrapIndentMode;
 
     void setWrapMode(const WdWrapMode mode) const;
-    void setWrapMode(const WdWrapMode mode,
-        const WdWrapVisualFlag start,
-        const WdWrapVisualFlag end) const;
+    void setWrapMode(const WdWrapMode mode, const WdWrapVisualFlag start,
+                     const WdWrapVisualFlag end) const;
     WdWrapMode getWrapMode() const;
     int getPosition(const int line, const int index) const;
     void setWrapIndentMode(const WdWrapIndentMode mode) const;
     WdWrapIndentMode getWrapIndentMode() const;
     void setWrapVisualFlag(const WdWrapVisualFlag start,
-        const WdWrapVisualFlag end,
-        const int indent = 0) const;
+                           const WdWrapVisualFlag end,
+                           const int indent = 0) const;
 
     void clearText() const;
     virtual bool isReadOnly() const;
     virtual void setReadOnly(const bool s) const;
     // TODO: SCI_CLEARDOCUMENTSTYLE
 
-    private slots:
-        /**
-        * \brief Called when a margin is clicked.
-        * \param margin The margin clicked.
-        * \param line The line number.
-        * \param state The state of the keyboard.
-        */
-        void slot_marginClicked(int margin, int line, Qt::KeyboardModifiers state);
-        /**
-        * \brief Called when the cursor position changes.
-        * \param line The line number.
-        * \param index The index of the line.
-        */
-        void slot_cursorPositionChanged(int line, int index);
-        /**
-        * \brief Called when the text is modified.
-        * \param pos The position.
-        * \param modificationType The type of modification (insertion, deletion...).
-        * \param text The text modified.
-        * \param length The length of the text.
-        * \param linesAdded The number of lines added.
-        * \param line The first line modified.
-        * \param foldLevelNow Unused.
-        * \param foldLevelPrev Unused
-        * \param token Unused.
-        * \param annotationLinesAdded The annotations added on the line.
-        */
-        void slot_textModified(int pos, int modificationType,
-            const char *text,
-            int length,
-            int linesAdded,
-            int line,
-            int foldLeveNow,
-            int foldLevelPrev,
-            int token,
-            int annotationLinesAdded);
-        /**
-        * \brief Called when a zoom action is performed.
-        */
-        void slot_zoom();
+private slots:
+    /**
+    * \brief Called when a margin is clicked.
+    * \param margin The margin clicked.
+    * \param line The line number.
+    * \param state The state of the keyboard.
+    */
+    void slot_marginClicked(int margin, int line, Qt::KeyboardModifiers state);
+    /**
+    * \brief Called when the cursor position changes.
+    * \param line The line number.
+    * \param index The index of the line.
+    */
+    void slot_cursorPositionChanged(int line, int index);
+    /**
+    * \brief Called when the text is modified.
+    * \param pos The position.
+    * \param modificationType The type of modification (insertion, deletion...).
+    * \param text The text modified.
+    * \param length The length of the text.
+    * \param linesAdded The number of lines added.
+    * \param line The first line modified.
+    * \param foldLevelNow Unused.
+    * \param foldLevelPrev Unused
+    * \param token Unused.
+    * \param annotationLinesAdded The annotations added on the line.
+    */
+    void slot_textModified(int pos, int modificationType, const char *text,
+                           int length, int linesAdded, int line,
+                           int foldLeveNow, int foldLevelPrev, int token,
+                           int annotationLinesAdded);
+    /**
+    * \brief Called when a zoom action is performed.
+    */
+    void slot_zoom();
 
-        void slot_callTip_entryChosen(QString const &text);
-        void slot_lostFocus();
-        void slot_scrollbarMoved(int);
-        void slot_getFocus();
+    void slot_callTip_entryChosen(QString const &text);
+    void slot_lostFocus();
+    void slot_scrollbarMoved(int);
+    void slot_getFocus();
 signals:
-        /**
-        * \brief Thrown when the margin is clicked (must be click sensitive).
-        * \param margin The margin clicked.
-        * \param line The line number.
-        */
-        void marginClicked(const int margin, const int line);
-        /**
-        * \brief Thrown when the cursor position has changed.
-        * \param line The line number.
-        * \param index The index on the line.
-        */
-        void cursorPositionChanged(const int line, const int index);
-        /**
-        * \brief Thrown when a text is deleted.
-        * \param offset Offset where the text is deleted.
-        * \param text The text deleted.
-        */
-        void textDeleted(const int atOffset, QString const &text);
-        /**
-        * \brief Thrown when a text is inserted.
-        * \param offset Offset where the text is inserted.
-        * \param text The text inserted.
-        */
-        void textInserted(const int offset,
-            QString const &text);
-        /**
-        * \brief Thrown when the zoom has changed.
-        * \param currentZoom The current zooom level.
-        */
-        void zoomChanged(const int currentZoom);
+    /**
+    * \brief Thrown when the margin is clicked (must be click sensitive).
+    * \param margin The margin clicked.
+    * \param line The line number.
+    */
+    void marginClicked(const int margin, const int line);
+    /**
+    * \brief Thrown when the cursor position has changed.
+    * \param line The line number.
+    * \param index The index on the line.
+    */
+    void cursorPositionChanged(const int line, const int index);
+    /**
+    * \brief Thrown when a text is deleted.
+    * \param offset Offset where the text is deleted.
+    * \param text The text deleted.
+    */
+    void textDeleted(const int atOffset, QString const &text);
+    /**
+    * \brief Thrown when a text is inserted.
+    * \param offset Offset where the text is inserted.
+    * \param text The text inserted.
+    */
+    void textInserted(const int offset, QString const &text);
+    /**
+    * \brief Thrown when the zoom has changed.
+    * \param currentZoom The current zooom level.
+    */
+    void zoomChanged(const int currentZoom);
 
-        void documentHasFocus();
+    void documentHasFocus();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -1483,14 +1489,13 @@ private:
     int getPixelVerticalCallTip(const int y) const;
     /*Q_DECL_CONSTEXPR*/ int getPixelHorizontalCallTip(const int y) const;
 
-
 private:
     Q_DISABLE_COPY(WdScintilla);
 
-    ScintillaPrivate *_scintilla; /**< The engine renderer. */
-    QString _filename; /**< The filename. */
-    QGridLayout *_layout; /**< The layout. */
-    QString _textCopied; /**< The text copied in the clipboard. */
+    ScintillaPrivate *_scintilla;  /**< The engine renderer. */
+    QString _filename;             /**< The filename. */
+    QGridLayout *_layout;          /**< The layout. */
+    QString _textCopied;           /**< The text copied in the clipboard. */
     QString _textGoingToBeDeleted; /**< The text that will be deleted.
                                    Used only for the signal textDeleted() */
     int _lengthTextDeleted; /**< The length of the text that will be deleted. */

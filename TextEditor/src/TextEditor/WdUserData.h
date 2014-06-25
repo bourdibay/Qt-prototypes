@@ -7,12 +7,10 @@
 #include <QVariant>
 #include <QTextBlockUserData>
 
-class WdUserData : public QTextBlockUserData
-{
+class WdUserData : public QTextBlockUserData {
 public:
-    WdUserData(QString const &prop, QVariant const &value = QVariant()) 
-        : QTextBlockUserData(), properties()
-    {
+    WdUserData(QString const &prop, QVariant const &value = QVariant())
+    : QTextBlockUserData(), properties() {
         properties.insert(prop, value);
     }
 

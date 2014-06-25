@@ -29,11 +29,11 @@ struct CompletionData {
 
     CompletionData() : kind(Unknown) {}
 
-    std::string         ret;
-    std::string         word;
+    std::string ret;
+    std::string word;
     std::vector<std::string> parameters;
     std::vector<std::string> optionalParameters;
-    Kind                kind;
+    Kind kind;
 };
 
 class CallTipModel : public QAbstractTableModel {
@@ -41,11 +41,13 @@ public:
     CallTipModel(std::vector<CompletionData> const &data);
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    virtual QVariant data(const QModelIndex &index,
+                          int role = Qt::DisplayRole) const;
     virtual QVariant headerData(int section, Qt::Orientation orientation,
-        int role = Qt::DisplayRole) const;
+                                int role = Qt::DisplayRole) const;
 
     void setFont(QFont const &font);
+
 private:
     std::vector<CompletionData> _data;
     QFont _font;

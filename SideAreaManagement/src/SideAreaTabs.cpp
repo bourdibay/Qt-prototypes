@@ -4,9 +4,7 @@
 #include "Area/SideAreaTabs.h"
 
 SideAreaTabs::SideAreaTabs(QWidget *parent)
-    : SideArea(parent),
-    _tabbar(new QTabBar())
-{
+: SideArea(parent), _tabbar(new QTabBar()) {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
@@ -17,8 +15,7 @@ SideAreaTabs::SideAreaTabs(QWidget *parent)
     _tabbar->setElideMode(Qt::ElideRight);
 }
 
-bool SideAreaTabs::addComponent(SideAreaComponent *component)
-{
+bool SideAreaTabs::addComponent(SideAreaComponent *component) {
     const bool ret = SideArea::addComponent(component);
     if (ret) {
         _tabbar->addTab(component->getIcon(), component->getName());
@@ -27,8 +24,7 @@ bool SideAreaTabs::addComponent(SideAreaComponent *component)
 }
 
 void SideAreaTabs::insertComponent(SideAreaComponent *before,
-                                   SideAreaComponent *component)
-{
+                                   SideAreaComponent *component) {
     int indexBefore = _components.indexOf(before);
     if (indexBefore < 0) {
         indexBefore = 0;
@@ -41,12 +37,10 @@ void SideAreaTabs::insertComponent(SideAreaComponent *before,
         _tabbar->removeTab(index);
     }
     _components.insert(indexBefore, component);
-    _tabbar->insertTab(indexBefore, component->getIcon(), 
-        component->getName());
+    _tabbar->insertTab(indexBefore, component->getIcon(), component->getName());
 }
 
-bool SideAreaTabs::takeComponent(SideAreaComponent *component)
-{
+bool SideAreaTabs::takeComponent(SideAreaComponent *component) {
     const int index = _stackComponents->indexOf(component);
     if (index >= 0) {
         SideArea::takeComponent(component);
@@ -56,8 +50,7 @@ bool SideAreaTabs::takeComponent(SideAreaComponent *component)
     return false;
 }
 
-void SideAreaTabs::setCurrentComponent(SideAreaComponent *component)
-{
+void SideAreaTabs::setCurrentComponent(SideAreaComponent *component) {
     SideArea::setCurrentComponent(component);
     const int index = _components.indexOf(getCurrentComponent());
     _tabbar->setCurrentIndex(index);

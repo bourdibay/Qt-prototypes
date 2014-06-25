@@ -14,8 +14,7 @@
 * \brief The element stored in the model.
 * We want to display the name and the number in two columns.
 */
-struct ModelElem
-{
+struct ModelElem {
     ModelElem(QString const &n, const int b) : name(n), nb(b) {}
     QString name;
     int nb;
@@ -27,9 +26,8 @@ struct ModelElem
 * in order to display the correct variable
 * of the structure ModelElem.
 */
-class ListModel : public ListViewModel<ModelElem>
-{
-    QVariant data(const QModelIndex &index, int role) const {
+class ListModel : public ListViewModel<ModelElem> {
+    virtual QVariant data(const QModelIndex &index, int role) const {
         if (index.isValid() == false) {
             return QVariant();
         }
@@ -39,17 +37,30 @@ class ListModel : public ListViewModel<ModelElem>
         return QVariant();
     }
 
-    bool setData(const QModelIndex &index, const QVariant &value,
-        int role = Qt::EditRole) {
-            if (index.isValid() == false) {
-                return false;
-            }
-            if (role == Qt::EditRole) {
-                const int row = index.row();
-                _content[row]->name = value.toString();
-                return true;
-            }
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const {
+        Qt::ItemFlags flags;
+
+        if (index.isValid()) {
+            flags = Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
+                    Qt::ItemIsEnabled;
+        } else {
+            flags = Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
+                    Qt::ItemIsDropEnabled | Qt::ItemIsEnabled;
+        }
+        return flags;
+    }
+
+    virtual bool setData(const QModelIndex &index, const QVariant &value,
+                         int role = Qt::EditRole) {
+        if (index.isValid() == false) {
             return false;
+        }
+        if (role == Qt::EditRole) {
+            const int row = index.row();
+            _content[row]->name = value.toString();
+            return true;
+        }
+        return false;
     }
 };
 

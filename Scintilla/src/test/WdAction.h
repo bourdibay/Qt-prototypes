@@ -42,8 +42,7 @@ public:
     * \param text The text displayed.
     * \param parent The parent.
     */
-    explicit WdAction(QString const &keyname,
-                      QString const &text,
+    explicit WdAction(QString const &keyname, QString const &text,
                       QObject *parent);
     /**
     * \brief Constructor.
@@ -52,10 +51,8 @@ public:
     * \param text The text displayed.
     * \param parent The parent.
     */
-    explicit WdAction(QString const &keyname,
-                      QIcon const &icon,
-                      QString const &text,
-                      QObject *parent);
+    explicit WdAction(QString const &keyname, QIcon const &icon,
+                      QString const &text, QObject *parent);
 
     /**
     * \brief Get the keyname.
