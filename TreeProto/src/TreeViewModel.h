@@ -3,6 +3,7 @@
 #define __TREE_VIEW_MODEL_H__
 
 // Qt
+#include <QObject>
 #include <QVector>
 #include <QVariant>
 #include <QTreeView>
@@ -12,10 +13,12 @@
 #include <QSharedPointer>
 #include <QAbstractItemModel>
 
+class QMouseEvent;
+
 // TODO: TO FIX: bug when we drag drop the same item in itself
 // in another view. (see ModelSharing test)
 
-class ATreeItem {
+class ATreeItem : public QObject {
 public:
     ATreeItem(ATreeItem *parent = nullptr);
     virtual ~ATreeItem();
@@ -27,12 +30,13 @@ public:
     virtual bool insertChild(const int position, ATreeItem *child);
     virtual bool appendChild(ATreeItem *child);
     virtual bool removeChildren(const int position, const int count);
-    virtual Qt::ItemFlags flags(const int /*column*/) const;
-    virtual bool setData(int column, const QVariant &value, int role);
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+    virtual bool setData(const QModelIndex &index, const QVariant &value,
+                         int role);
 
     // Pure methods
     virtual int columnCount() const = 0;
-    virtual QVariant data(int column, int role) const = 0;
+    virtual QVariant data(const QModelIndex &index, int role) const = 0;
     virtual ATreeItem *clone() const = 0;
 
     // Callback methods called after receiving a specific signal
@@ -47,6 +51,8 @@ public:
     virtual void pressed() {}
     // context menu requested
     virtual void customContextMenu(const QPoint & /*pos*/) {}
+    virtual void dropped(QModelIndex const & /*fromIndex*/,
+                         QModelIndex const & /*newIndex*/) {}
 
 protected:
     ATreeItem *_parent;
@@ -97,11 +103,11 @@ public:
     virtual ~RootItem() {}
 
     virtual int columnCount() const;
-    virtual QVariant data(int /*column*/, int /*role*/) const {
+    virtual QVariant data(const QModelIndex & /*index*/, int /*role*/) const {
         return QVariant();
     }
-    virtual bool setData(int /*column*/, const QVariant & /*value*/,
-                         int /*role*/) {
+    virtual bool setData(const QModelIndex & /*index*/,
+                         const QVariant & /*value*/, int /*role*/) {
         return false;
     }
     virtual QVariant headerData(int section, Qt::Orientation orientation,
@@ -119,10 +125,13 @@ public:
     TreeItemMimeData();
     virtual ~TreeItemMimeData() {}
     QVector<ATreeItem *> const &getItems() const;
+    QVector<ATreeItem *> const &getItemsOrignal() const;
     QStringList formats() const;
     void addItem(ATreeItem *item);
+    void addItemOriginal(ATreeItem *item);
 
 private:
+    QVector<ATreeItem *> _itemsOriginal;
     QVector<ATreeItem *> _items;
     QStringList _format;
 };
@@ -196,6 +205,9 @@ public:
     void keyPressEvent(QKeyEvent *event);
 
     void setTreeViewModel(TreeViewModel *model);
+
+protected:
+    virtual void mousePressEvent(QMouseEvent *e);
 };
 
 #endif

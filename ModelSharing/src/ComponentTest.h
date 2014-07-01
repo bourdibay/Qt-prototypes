@@ -29,10 +29,11 @@ public:
         return 2; // name + nb
     }
 
-    virtual QVariant data(int column, int role) const {
+    virtual QVariant data(QModelIndex const &index, int role) const {
         if (role != Qt::DisplayRole) {
             return QVariant();
         }
+        const int column = index.column();
         switch (column) {
             case 0:
                 return _data->str;
@@ -42,11 +43,13 @@ public:
         return QVariant();
     }
 
-    virtual bool setData(int column, const QVariant &value, int role) {
+    virtual bool setData(QModelIndex const &index, const QVariant &value,
+                         int role) override {
         if (!value.isValid()) {
             return false;
         }
         if (role != Qt::EditRole) {
+            const int column = index.column();
             switch (column) {
                 case 0:
                     _data->str = value.toString();

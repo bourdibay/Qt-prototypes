@@ -36,15 +36,16 @@ public:
         return 2; // name + nb
     }
 
-    virtual Qt::ItemFlags flags(const int column) const {
-        return ATreeItem::flags(column) | Qt::ItemFlag::ItemIsEditable |
+    virtual Qt::ItemFlags flags(const QModelIndex &idx) const {
+        return ATreeItem::flags(idx) | Qt::ItemFlag::ItemIsEditable |
                Qt::ItemIsDragEnabled;
     }
 
-    virtual QVariant data(int column, int role) const {
+    virtual QVariant data(QModelIndex const &index, int role) const {
         if (role != Qt::DisplayRole) {
             return QVariant();
         }
+        const int column = index.column();
         switch (column) {
             case 0:
                 return _data->name;
@@ -54,11 +55,13 @@ public:
         return QVariant();
     }
 
-    virtual bool setData(int column, const QVariant &value, int role) {
+    virtual bool setData(QModelIndex const &index, const QVariant &value,
+                         int role) {
         if (!value.isValid()) {
             return false;
         }
         if (role == Qt::EditRole) {
+            const int column = index.column();
             switch (column) {
                 case 0:
                     _data->name = value.toString();
@@ -84,26 +87,31 @@ public:
 
     virtual int columnCount() const { return 1; }
 
-    virtual QVariant data(int column, int role) const {
-        if (role != Qt::DisplayRole) {
-            return QVariant();
-        }
-        switch (column) {
-            case 0:
+    virtual Qt::ItemFlags flags(const QModelIndex &idx) const {
+        return ATreeItem::flags(idx) | Qt::ItemFlag::ItemIsEditable |
+               Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    }
+
+    virtual QVariant data(QModelIndex const &index, int role) const {
+        if (role == Qt::BackgroundRole) {
+            return QColor("red");
+        } else if (role == Qt::DisplayRole) {
+            if (index.column() == 0) {
                 return _data->name;
+            }
         }
         return QVariant();
     }
 
-    virtual bool setData(int column, const QVariant &value, int role) {
+    virtual bool setData(QModelIndex const &index, const QVariant &value,
+                         int role) override {
         if (!value.isValid()) {
             return false;
         }
         if (role == Qt::EditRole) {
-            switch (column) {
-                case 0:
-                    _data->name = value.toString();
-                    return true;
+            if (index.column() == 0) {
+                _data->name = value.toString();
+                return true;
             }
         }
         return false;
