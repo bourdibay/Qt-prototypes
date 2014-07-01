@@ -2,6 +2,9 @@
 #ifndef __TREE_VIEW_MODEL_H__
 #define __TREE_VIEW_MODEL_H__
 
+// STL
+#include <memory>
+
 // Qt
 #include <QObject>
 #include <QVector>
@@ -73,17 +76,17 @@ protected:
 template <typename T>
 class TreeItem : public ATreeItem {
 public:
-    TreeItem(T *data, ATreeItem *parent = nullptr)
-    : ATreeItem(parent), _data(data) {}
+    TreeItem(std::unique_ptr<T> data, ATreeItem *parent = nullptr)
+    : ATreeItem(parent), _data(std::move(data)) {}
 
-    virtual ~TreeItem() { delete _data; }
-    T *getData() const { return _data; }
+    virtual ~TreeItem() {}
+    T *getData() const { return _data.get(); }
 
 protected:
     template <typename RealType>
     RealType *clone() const {
-        T *elem = new T(*_data);
-        RealType *item = new RealType(elem, nullptr);
+        std::unique_ptr<T> elem = std::unique_ptr<T>(new T(*_data));
+        RealType *item = new RealType(std::move(elem), nullptr);
         auto children = _children;
         for (const ATreeItem *child : children) {
             item->appendChild(child->clone());
@@ -91,7 +94,7 @@ protected:
         return item;
     }
 
-    T *_data;
+    std::unique_ptr<T> _data;
 
 private:
     Q_DISABLE_COPY(TreeItem);

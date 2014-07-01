@@ -76,7 +76,7 @@ private slots:
     void slot_removeAll() { _model->removeAll(); }
 
     void slot_add_category() {
-        CategoryElem *elem = createCategoryElem();
+        std::unique_ptr<CategoryElem> elem = createCategoryElem();
         const QModelIndex currentIndex = _view->currentIndex();
         const auto currentItem = _model->getItem(currentIndex);
         auto parent = currentItem->getParent();
@@ -84,7 +84,7 @@ private slots:
             parent = _model->getRoot();
         }
         const QModelIndex indexParent = _model->index(parent);
-        CategoryItem *toAdd = new CategoryItem(elem, parent);
+        CategoryItem *toAdd = new CategoryItem(std::move(elem), parent);
         int row = currentIndex.row();
         if (row < 0) {
             row = 0;
@@ -93,7 +93,7 @@ private slots:
     }
 
     void slot_addElement() {
-        ModelElem *elem = createModelElem();
+        std::unique_ptr<ModelElem> elem = createModelElem();
         const QModelIndex currentIndex = _view->currentIndex();
         const auto currentItem = _model->getItem(currentIndex);
         auto parent = currentItem->getParent();
@@ -101,7 +101,7 @@ private slots:
             parent = _model->getRoot();
         }
         const QModelIndex indexParent = _model->index(parent);
-        TestItem *toAdd = new TestItem(elem, parent);
+        TestItem *toAdd = new TestItem(std::move(elem), parent);
         int row = currentIndex.row();
         if (row < 0) {
             row = 0;
@@ -110,17 +110,18 @@ private slots:
     }
 
     void slot_appendElement() {
-        ModelElem *elem = createModelElem();
+        std::unique_ptr<ModelElem> elem = createModelElem();
         const QModelIndex currentIndex = _view->currentIndex();
-        TestItem *toAdd = new TestItem(elem, _model->getItem(currentIndex));
+        TestItem *toAdd =
+            new TestItem(std::move(elem), _model->getItem(currentIndex));
         _model->appendItem(toAdd, currentIndex);
     }
 
     void slot_addElementInside() {
-        ModelElem *elem = createModelElem();
+        std::unique_ptr<ModelElem> elem = createModelElem();
         const QModelIndex currentIndex = _view->currentIndex();
         const auto currentItem = _model->getItem(currentIndex);
-        TestItem *toAdd = new TestItem(elem, currentItem);
+        TestItem *toAdd = new TestItem(std::move(elem), currentItem);
         _model->insertItem(0, toAdd, currentIndex);
     }
 
@@ -136,43 +137,56 @@ private slots:
 private:
     void populateTree() {
         auto root = _model->getRoot();
-        root->appendChild(
-            new TestItem(new ModelElem("First element after root", 1), root));
+        root->appendChild(new TestItem(std::unique_ptr<ModelElem>(new ModelElem(
+                                           "First element after root", 1)),
+                                       root));
         _model->insertItem(
-            0, new TestItem(new ModelElem("Next element added at idx 0", 1)));
+            0, new TestItem(std::unique_ptr<ModelElem>(
+                   new ModelElem("Next element added at idx 0", 1))));
         QModelIndex idx = _model->index(0, 0, root);
 
         QModelIndex i = _model->index(root);
         ATreeItem *f = root->getChild(0);
         QModelIndex idx_f = _model->index(f);
 
-        _model->insertItem(0, new TestItem(new ModelElem("First", 1)));
+        _model->insertItem(0, new TestItem(std::unique_ptr<ModelElem>(
+                                  new ModelElem("First", 1))));
         _model->insertItems(1, QVector<ATreeItem *>()
-                                   << new TestItem(new ModelElem("Two", 2))
-                                   << new TestItem(new ModelElem("Three", 3))
-                                   << new TestItem(new ModelElem("Four", 4))
-                                   << new TestItem(new ModelElem("Five", 5)));
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("Two", 2)))
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("Three", 2)))
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("Four", 4)))
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("Five", 5))));
 
         _model->insertItems(0, QVector<ATreeItem *>()
-                                   << new TestItem(new ModelElem("__two", 2))
-                                   << new TestItem(new ModelElem("__three", 3))
-                                   << new TestItem(new ModelElem("__four", 4))
-                                   << new TestItem(new ModelElem("__five", 5)),
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("__Two", 2)))
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("__Three", 3)))
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("__Four", 4)))
+                                   << new TestItem(std::unique_ptr<ModelElem>(
+                                          new ModelElem("__Five", 5))),
                             _model->index(2, 0));
     }
 
-    ModelElem *createModelElem() {
+    std::unique_ptr<ModelElem> createModelElem() {
         static int i = 0;
-        ModelElem *elem =
-            new ModelElem(QString("new_elem_inside_%1").arg(i), i);
+        std::unique_ptr<ModelElem> elem = std::unique_ptr<ModelElem>(
+            new ModelElem(QString("new_elem_inside_%1").arg(i), i));
         ++i;
-        return elem;
+        return std::move(elem);
     }
-    CategoryElem *createCategoryElem() {
+
+    std::unique_ptr<CategoryElem> createCategoryElem() {
         static int i = 0;
-        CategoryElem *elem = new CategoryElem(QString("Category_%1").arg(i));
+        std::unique_ptr<CategoryElem> elem = std::unique_ptr<CategoryElem>(
+            new CategoryElem(QString("Category_%1").arg(i)));
         ++i;
-        return elem;
+        return std::move(elem);
     }
 
     TreeView *_view;

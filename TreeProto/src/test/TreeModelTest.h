@@ -25,8 +25,8 @@ struct CategoryElem {
 class TestItem : public TreeItem<ModelElem> {
 public:
     TestItem(ATreeItem *parent = nullptr) : TreeItem(nullptr, parent) {}
-    TestItem(ModelElem *data, ATreeItem *parent = nullptr)
-    : TreeItem(data, parent) {}
+    TestItem(std::unique_ptr<ModelElem> data, ATreeItem *parent = nullptr)
+    : TreeItem(std::move(data), parent) {}
 
     virtual TestItem *clone() const {
         return TreeItem<ModelElem>::clone<TestItem>();
@@ -78,8 +78,9 @@ public:
 class CategoryItem : public TreeItem<CategoryElem> {
 public:
     CategoryItem(ATreeItem *parent = nullptr) : TreeItem(nullptr, parent) {}
-    CategoryItem(CategoryElem *data, ATreeItem *parent = nullptr)
-    : TreeItem(data, parent) {}
+    CategoryItem(std::unique_ptr<CategoryElem> data,
+                 ATreeItem *parent = nullptr)
+    : TreeItem(std::move(data), parent) {}
 
     virtual CategoryItem *clone() const {
         return TreeItem<CategoryElem>::clone<CategoryItem>();

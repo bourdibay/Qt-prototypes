@@ -18,8 +18,8 @@ struct Data {
 class DataItem : public TreeItem<Data> {
 public:
     DataItem(ATreeItem *parent = nullptr) : TreeItem(nullptr, parent) {}
-    DataItem(Data *data, ATreeItem *parent = nullptr)
-    : TreeItem(data, parent) {}
+    DataItem(std::unique_ptr<Data> data, ATreeItem *parent = nullptr)
+    : TreeItem(std::move(data), parent) {}
 
     virtual DataItem *clone() const {
         return TreeItem<Data>::clone<DataItem>();
@@ -112,7 +112,7 @@ private slots:
     }
 
     void slot_addElement() {
-        Data *elem = createData();
+        std::unique_ptr<Data> elem = createData();
         const QModelIndex currentIndex = _view->currentIndex();
         const auto currentItem = _model->getItem(currentIndex);
         auto parent = currentItem->getParent();
@@ -120,7 +120,7 @@ private slots:
             parent = _model->getRoot();
         }
         const QModelIndex indexParent = _model->index(parent);
-        DataItem *toAdd = new DataItem(elem, parent);
+        DataItem *toAdd = new DataItem(std::move(elem), parent);
         int row = currentIndex.row();
         if (row < 0) {
             row = 0;
@@ -129,10 +129,10 @@ private slots:
     }
 
     void slot_addElementInside() {
-        Data *elem = createData();
+        std::unique_ptr<Data> elem = createData();
         const QModelIndex currentIndex = _view->currentIndex();
         const auto currentItem = _model->getItem(currentIndex);
-        DataItem *toAdd = new DataItem(elem, currentItem);
+        DataItem *toAdd = new DataItem(std::move(elem), currentItem);
         _model->insertItem(0, toAdd, currentIndex);
     }
 
@@ -146,17 +146,18 @@ private slots:
     }
 
 private:
-    Data *createData() {
+    std::unique_ptr<Data> createData() {
         static int i = 0;
-        Data *elem = new Data(QString("new_elem_inside_%1").arg(i), i);
+        std::unique_ptr<Data> elem = std::unique_ptr<Data>(
+            new Data(QString("new_elem_inside_%1").arg(i), i));
         ++i;
-        return elem;
+        return std::move(elem);
     }
 
     TreeView *_view;
-    //    std::shared_ptr<TreeViewModel> _model;
+    //    std::unique_ptr<TreeViewModel> _model;
     QSharedPointer<TreeViewModel> _model;
-    //    std::shared_ptr<TreeViewModel> _model;
+    //    std::unique_ptr<TreeViewModel> _model;
 };
 
 #endif
