@@ -152,7 +152,7 @@ ATreeItem *TreeViewModel::getItem(const QModelIndex &index) const {
 template <typename T>
 T *TreeViewModel::getItem(const QModelIndex &index) const {
     if (index.isValid()) {
-        auto *item = static_cast<T *>(index.internalPointer());
+        T *item = static_cast<T *>(index.internalPointer());
         if (item) {
             return item;
         }
@@ -165,13 +165,13 @@ int TreeViewModel::columnCount(const QModelIndex & /*parent*/) const {
 }
 
 int TreeViewModel::rowCount(const QModelIndex &parent) const {
-    const auto *parentItem = getItem(parent);
+    const ATreeItem *parentItem = getItem(parent);
     return parentItem->getChildrenNumber();
 }
 
 QVariant TreeViewModel::data(const QModelIndex &index, int role) const {
     if (index.isValid()) {
-        const auto *item = getItem(index);
+        const ATreeItem *item = getItem(index);
         return item->data(index, role);
     }
     return QVariant();
@@ -180,7 +180,7 @@ QVariant TreeViewModel::data(const QModelIndex &index, int role) const {
 bool TreeViewModel::setData(const QModelIndex &index, const QVariant &value,
                             int role) {
     if (index.isValid()) {
-        auto *item = getItem(index);
+        ATreeItem *item = getItem(index);
         const bool result = item->setData(index, value, role);
         if (result) {
             emit dataChanged(index, index, QVector<int>() << role);
@@ -195,13 +195,13 @@ QModelIndex TreeViewModel::index(int row, int column,
     if (parent.isValid() && parent.column() != 0) {
         return QModelIndex();
     }
-    const auto *parentItem = getItem(parent);
+    const ATreeItem *parentItem = getItem(parent);
     return index(row, column, parentItem);
 }
 
 QModelIndex TreeViewModel::index(int row, int column,
                                  const ATreeItem *parent) const {
-    auto childItem = parent->getChild(row);
+    ATreeItem *childItem = parent->getChild(row);
     if (childItem) {
         return createIndex(row, column, childItem);
     }
@@ -267,7 +267,7 @@ bool TreeViewModel::appendItem(ATreeItem *item, const QModelIndex &parent) {
 
 bool TreeViewModel::removeItems(const int position, const int count,
                                 const QModelIndex &parent) {
-    auto *parentItem = getItem(parent);
+    ATreeItem *parentItem = getItem(parent);
     beginRemoveRows(parent, position, position + count - 1);
     const bool success = parentItem->removeChildren(position, count);
     endRemoveRows();
@@ -291,10 +291,10 @@ QModelIndex TreeViewModel::index(const ATreeItem *item) const {
     if (!item || item == _root) {
         return QModelIndex();
     }
-    auto parent = item->getParent();
+    ATreeItem *parent = item->getParent();
     if (parent) {
         for (int i = 0; i < parent->getChildrenNumber(); ++i) {
-            auto child = parent->getChild(i);
+            ATreeItem *child = parent->getChild(i);
             if (child == item) {
                 const QModelIndex indexChild = index(i, 0, parent);
                 return indexChild;
@@ -382,49 +382,49 @@ void TreeView::setTreeViewModel(TreeViewModel *model) {
     QTreeView::setModel(model);
     QObject::connect(this, &QTreeView::expanded, this,
                      [model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->expanded();
         }
     });
     QObject::connect(this, &QTreeView::collapsed, this,
                      [model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->collapsed();
         }
     });
     QObject::connect(this, &QTreeView::activated, this,
                      [model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->activated();
         }
     });
     QObject::connect(this, &QTreeView::clicked, this,
                      [this, model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->clicked();
         }
     });
     QObject::connect(this, &QTreeView::doubleClicked, this,
                      [model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->doubleClicked();
         }
     });
     QObject::connect(this, &QTreeView::entered, this,
                      [model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->entered();
         }
     });
     QObject::connect(this, &QTreeView::pressed, this,
                      [model](const QModelIndex &index) {
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->pressed();
         }
@@ -432,7 +432,7 @@ void TreeView::setTreeViewModel(TreeViewModel *model) {
     QObject::connect(this, &QTreeView::customContextMenuRequested, this,
                      [this, model](const QPoint &pos) {
         const QModelIndex index = this->indexAt(pos);
-        auto item = model->getItem(index);
+        ATreeItem *item = model->getItem(index);
         if (item) {
             item->customContextMenu(pos);
         }
